@@ -1,13 +1,11 @@
 #ifndef _ROOM_HPP_
 #define _ROOM_HPP_
 
+#include "reservation.hpp"
 #include <string>
 #include <vector>
 
 using namespace std;
-
-// forward declaration. should it be here?
-class Reservation;
 
 class Room {
 private:
