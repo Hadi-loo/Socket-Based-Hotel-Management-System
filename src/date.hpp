@@ -10,7 +10,12 @@ private:
     int day;
     
 public:
+    Date();
     Date(int year, int month, int day);
+    ~Date();
+    void set_year(int year);
+    void set_month(int month);
+    void set_day(int day);
 
 };
 
