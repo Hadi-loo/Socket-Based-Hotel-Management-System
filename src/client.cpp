@@ -36,6 +36,8 @@ int main(int argc, char const *argv[]) {
     
     int server_fd = connectServer(server_port);
 
+    // UDP and select must be added
+
     while (1) {
         read(0, buff, 1024);
         send(server_fd, buff, strlen(buff), 0);
