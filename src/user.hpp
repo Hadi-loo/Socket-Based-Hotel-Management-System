@@ -18,7 +18,7 @@ private:
 public:
     User(int id, string username, string password, bool is_admin, int balance, string phone, string address);
     User(int id, string username, string password, bool is_admin);
-    
+    void show_info();
 
 };
 
