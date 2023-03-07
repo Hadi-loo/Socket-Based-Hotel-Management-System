@@ -7,6 +7,7 @@
 #include <string.h>
 #include <arpa/inet.h>
 #include <sys/time.h>
+#include <iostream>
 
 
 
@@ -25,7 +26,9 @@ int connectServer(int port) {
     if (connect(fd, (struct sockaddr *)&server_address, sizeof(server_address)) < 0) { // checking for errors
         printf("Error in connecting to server\n");
     }
-    printf("Connected to the server\n");
+    else
+        printf("client Connected to the server\n");
+        
     return fd;
 }
 
@@ -33,7 +36,6 @@ int connectServer(int port) {
 int main(int argc, char const *argv[]) {
     char buff[1024] = {0};
     int server_port = atoi(argv[1]);
-    
     int server_fd = connectServer(server_port);
 
     // UDP and select must be added
