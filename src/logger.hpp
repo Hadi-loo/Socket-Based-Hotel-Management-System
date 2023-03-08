@@ -15,6 +15,7 @@ public:
     Logger(string);
     ~Logger();
     void log(string);
+    string current_time();
 };
 
 #endif
