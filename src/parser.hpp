@@ -1,7 +1,11 @@
 #ifndef _PARSER_HPP_
 #define _PARSER_HPP_
 
+#include <fstream>
 #include <string>
+#include <vector>
+#include "json.hpp"
+#include "user.hpp"
 using namespace std;
 
 class Parser {

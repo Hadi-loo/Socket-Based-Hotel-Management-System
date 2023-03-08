@@ -8,7 +8,6 @@
 #include <arpa/inet.h>
 #include <sys/time.h>
 #include <iostream>
-#include <string>
 #include "defs.hpp"
 #include "parser.hpp"
 #include "logger.hpp"

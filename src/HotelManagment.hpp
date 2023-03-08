@@ -23,7 +23,6 @@ private:
 public:
     HotelManagment();
     ~HotelManagment();
-    HotelManagment(vector <User*> _users , vector <Reservation*> _reserves , vector<Room*> _rooms , string _server_ip , int _server_port);
 
     void set_server_ip(string server_ip);
     void set_server_port(int server_port);
