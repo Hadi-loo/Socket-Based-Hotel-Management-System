@@ -12,7 +12,7 @@ Parser::~Parser() {
 
 void Parser::parse_config(string config_file_name, string &hostName, int &port) {
     std:ifstream config_file;
-    config_file.open(configs_path + config_file_name, ios::in);
+    config_file.open(configs_path + "/" + config_file_name, std::ifstream::in);
     nlohmann::json j;
     config_file >> j;
     hostName = j["hostName"];
