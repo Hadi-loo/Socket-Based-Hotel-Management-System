@@ -8,6 +8,9 @@
 #include <arpa/inet.h>
 #include <sys/time.h>
 #include <iostream>
+#include <string>
+#include "defs.hpp"
+#include "parser.hpp"
 
 using namespace std;
 
@@ -31,8 +34,6 @@ int setupServer(int port , string ip_address) {
     return server_fd;
 }
 
-
-
 int acceptClient(int server_fd) {
     int client_fd;
     struct sockaddr_in client_address;
@@ -42,12 +43,14 @@ int acceptClient(int server_fd) {
     return client_fd;
 }
 
-
-
 int main(int argc, char const *argv[]) {
     int server_fd, new_socket, max_sd;
-    int server_port = atoi(argv[1]);
-    string server_ip_address = argv[2];
+
+    Parser server_parser(CONFIGS_PATH);
+    string server_ip_address;
+    int server_port;
+    server_parser.parse_config(CONFIG_FILE_NAME, server_ip_address, server_port);
+    
     char buffer[1024] = {0};
     fd_set master_set, working_set;
     server_fd = setupServer(server_port , server_ip_address);
@@ -63,7 +66,7 @@ int main(int argc, char const *argv[]) {
         select(max_sd + 1, &working_set, NULL, NULL, NULL);
         for (int i = 0; i <= max_sd; i++) {
             if (FD_ISSET(i, &working_set)) {
-                if (i == server_fd) {                                       // new clinet
+                if (i == server_fd) {                                       // new client
                     new_socket = acceptClient(server_fd);
                     FD_SET(new_socket, &master_set);
                     if (new_socket > max_sd)
