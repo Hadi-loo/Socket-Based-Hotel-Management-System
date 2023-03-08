@@ -2,7 +2,7 @@
 #include <iostream>
 
 User::User(int _id, string _username, string _password, bool _is_admin, int _balance, string _phone, string _address) {
-    id = id;
+    id = _id;
     username = _username;
     password = _password;
     is_admin = _is_admin;
