@@ -12,6 +12,7 @@
 #include "defs.hpp"
 #include "parser.hpp"
 #include "logger.hpp"
+#include "HotelManagment.hpp"
 
 using namespace std;
 
@@ -49,6 +50,7 @@ int main(int argc, char const *argv[]) {
 
     Parser server_parser(CONFIGS_PATH);
     Logger server_logger(LOGS_PATH);
+    HotelManagment hotel_managment;
     
     string server_ip_address;
     int server_port;
@@ -62,7 +64,15 @@ int main(int argc, char const *argv[]) {
     max_sd = server_fd;
     FD_SET(server_fd, &master_set);
 
-    string log_message = "Server is up and running on " + server_ip_address + ":" + to_string(server_port) + "...";
+    hotel_managment.set_server_ip(server_ip_address);
+    hotel_managment.set_server_port(server_port);
+
+    vector<User*> users = server_parser.parse_users(USERSINFO_FILE_NAME);
+    hotel_managment.add_users(users);
+
+    
+
+    string log_message = "Server is up and running on " + server_ip_address + ":" + to_string(server_port) + "...\n";
     server_logger.log(SERVER_LOG_FILE_NAME, log_message);
 
     while (1) {
@@ -75,7 +85,7 @@ int main(int argc, char const *argv[]) {
                     FD_SET(new_socket, &master_set);
                     if (new_socket > max_sd)
                         max_sd = new_socket;
-                    log_message = "New client connected with fd = " + to_string(new_socket);
+                    log_message = "New client connected with fd = " + to_string(new_socket) + "\n";
                     server_logger.log(SERVER_LOG_FILE_NAME, log_message);
                 }
                 

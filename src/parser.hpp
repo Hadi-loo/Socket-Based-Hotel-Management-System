@@ -11,6 +11,8 @@ public:
     Parser(string configs_path);
     ~Parser();
     void parse_config(string config_file, string &hostName, int &port);
+    vector<User*> parse_users(string users_file);
+    
 };
 
 
