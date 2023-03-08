@@ -11,6 +11,7 @@
 #include <string>
 #include "defs.hpp"
 #include "parser.hpp"
+#include "logger.hpp"
 
 using namespace std;
 
@@ -47,6 +48,8 @@ int main(int argc, char const *argv[]) {
     int server_fd, new_socket, max_sd;
 
     Parser server_parser(CONFIGS_PATH);
+    Logger server_logger(LOGS_PATH);
+    
     string server_ip_address;
     int server_port;
     server_parser.parse_config(CONFIG_FILE_NAME, server_ip_address, server_port);
@@ -59,7 +62,8 @@ int main(int argc, char const *argv[]) {
     max_sd = server_fd;
     FD_SET(server_fd, &master_set);
 
-    write(1, "Server is running\n", 18);
+    string log_message = "Server is up and running on " + server_ip_address + ":" + to_string(server_port) + "...";
+    server_logger.log(SERVER_LOG_FILE_NAME, log_message);
 
     while (1) {
         working_set = master_set;
@@ -71,7 +75,8 @@ int main(int argc, char const *argv[]) {
                     FD_SET(new_socket, &master_set);
                     if (new_socket > max_sd)
                         max_sd = new_socket;
-                    printf("New user connected.\n");
+                    log_message = "New client connected with fd = " + to_string(new_socket);
+                    server_logger.log(SERVER_LOG_FILE_NAME, log_message);
                 }
                 
                 else {                                                      // client sending msg
@@ -83,7 +88,8 @@ int main(int argc, char const *argv[]) {
                         FD_CLR(i, &master_set);
                         continue;
                     }
-                    printf("client %d message is: %s\n", i, buffer);
+                    log_message = "Received message from client fd = " + to_string(i) + " : " + buffer;
+                    server_logger.log(SERVER_LOG_FILE_NAME, log_message);
                     memset(buffer, 0, 1024);
                 }
             }
