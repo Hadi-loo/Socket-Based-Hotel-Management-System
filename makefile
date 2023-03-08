@@ -14,9 +14,20 @@ CLIENT_EXE = client.out
 
 
 # Sensitivity lists
+
+ServerExecutableSensitivityList = \
+	$(BIN_DIR)/server.o \
+	$(BIN_DIR)/parser.o \
+	$(BIN_DIR)/logger.o
+
+ClientExecutableSensitivityList = \
+	$(BIN_DIR)/client.o \
+	$(BIN_DIR)/parser.o 
+
 ServerSensitivityList = \
 	$(SRC_DIR)/server.cpp \
 	$(SRC_DIR)/parser.hpp \
+	$(SRC_DIR)/logger.hpp \
 	$(SRC_DIR)/defs.hpp
 
 ClientSensitivityList = \
@@ -29,16 +40,20 @@ ParserSensitivityList = \
 	$(SRC_DIR)/parser.hpp \
 	$(SRC_DIR)/json.hpp
 
+loggerSensitivityList = \
+	$(SRC_DIR)/logger.cpp \
+	$(SRC_DIR)/logger.hpp
+
 
 
 # Compile
 all: $(SERVER_EXE) $(CLIENT_EXE)
 
-$(SERVER_EXE): $(BIN_DIR)/server.o $(BIN_DIR)/parser.o
-	$(CXX) $(CXXFLAGS) $(BIN_DIR)/server.o $(BIN_DIR)/parser.o -o $(SERVER_EXE)
+$(SERVER_EXE): $(ServerExecutableSensitivityList)
+	$(CXX) $(CXXFLAGS) $(ServerExecutableSensitivityList) -o $(SERVER_EXE)
 
-$(CLIENT_EXE): $(BIN_DIR)/client.o $(BIN_DIR)/parser.o
-	$(CXX) $(CXXFLAGS) $(BIN_DIR)/client.o $(BIN_DIR)/parser.o -o $(CLIENT_EXE) 
+$(CLIENT_EXE): $(ClientExecutableSensitivityList)
+	$(CXX) $(CXXFLAGS) $(ClientExecutableSensitivityList) -o $(CLIENT_EXE) 
 
 
 $(BIN_DIR)/server.o: $(ServerSensitivityList)
@@ -49,6 +64,9 @@ $(BIN_DIR)/client.o: $(ClientSensitivityList)
 
 $(BIN_DIR)/parser.o: $(ParserSensitivityList)
 	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/parser.cpp -o $(BIN_DIR)/parser.o
+
+$(BIN_DIR)/logger.o: $(loggerSensitivityList)
+	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/logger.cpp -o $(BIN_DIR)/logger.o
 
 .PHONY: clean
 
