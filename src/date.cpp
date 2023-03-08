@@ -1,18 +1,18 @@
 #include "date.hpp"
 
 Date::Date() {
-    this->year = 1;
-    this->month = 1;
-    this->day = 1;
+    year = 1;
+    month = 1;
+    day = 1;
 }
 
-Date::Date(int year, int month, int day) {
-    if (year >= 1) {
-        if (month >= 1 && month <= 12) {
-            if (day >= 1 && day <= 31) {
-                this->year = year;
-                this->month = month;
-                this->day = day;
+Date::Date(int _year, int _month, int _day) {
+    if (_year >= 1) {
+        if (_month >= 1 && _month <= 12) {
+            if (_day >= 1 && _day <= 31) {
+                year = _year;
+                month = _month;
+                day = _day;
                 return;
             }
         }
@@ -26,25 +26,25 @@ Date::~Date() {
     // TODO
 }
 
-void Date::set_year(int year) {
-    if (year >= 1) {
-        this->year = year;
+void Date::set_year(int _year) {
+    if (_year >= 1) {
+        year = _year;
     } else {
         // handle error. throw exception or simply print error message?
     }
 }
 
-void Date::set_month(int month) {
-    if (month >= 1 && month <= 12) {
-        this->month = month;
+void Date::set_month(int _month) {
+    if (_month >= 1 && _month <= 12) {
+        month = _month;
     } else {
         // handle error. throw exception or simply print error message?
     }
 }
 
-void Date::set_day(int day) {
-    if (day >= 1 && day <= 31) {
-        this->day = day;
+void Date::set_day(int _day) {
+    if (_day >= 1 && _day <= 31) {
+        day = _day;
     } else {
         // handle error. throw exception or simply print error message?
     }

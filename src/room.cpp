@@ -1,10 +1,10 @@
 #include "room.hpp"
 
-Room::Room(int id, int max_capacity, int available_capacity, int price, bool is_available, vector<Reservation*> reservations) {
-    this->id = id;
-    this->max_capacity = max_capacity;
-    this->available_capacity = available_capacity;
-    this->price = price;
-    this->is_available = is_available;
-    this->reservations = reservations;
+Room::Room(int _id, int _max_capacity, int _available_capacity, int _price, bool _is_available, vector<Reservation*> _reservations) {
+    id = _id;
+    max_capacity = _max_capacity;
+    available_capacity = _available_capacity;
+    price = _price;
+    is_available = _is_available;
+    reservations = _reservations;
 }
