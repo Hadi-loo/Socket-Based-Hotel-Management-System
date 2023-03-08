@@ -37,3 +37,6 @@
 # IDEA Configuration Files
 .idea/
 .vscode/
+
+# log files
+*.log
