@@ -18,7 +18,7 @@ private:
 
 public:
     Room(int id, int max_capacity, int available_capacity, int price, bool is_available, vector<Reservation*> reservations);
-    
+    vector<Reservation*> get_reservations();
 };
 
 #endif
