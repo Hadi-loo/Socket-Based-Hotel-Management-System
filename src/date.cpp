@@ -49,3 +49,10 @@ void Date::set_day(int _day) {
         // handle error. throw exception or simply print error message?
     }
 }
+
+int Date::get_year(){return year;}
+
+int Date::get_month(){return month;}
+
+int Date::get_day(){return day;}
+

@@ -16,6 +16,9 @@ public:
     void set_year(int year);
     void set_month(int month);
     void set_day(int day);
+    int get_year();
+    int get_month();
+    int get_day();
 
 };
 
