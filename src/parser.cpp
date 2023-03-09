@@ -60,7 +60,7 @@ vector<Room*> Parser::parse_rooms(string rooms_file_name){
             Reservation* reservation = new Reservation(reservation_info["id"], room_info["number"] , reservation_info["roomNumber"], _checkInDate , _checkOutDate);
             reservations.push_back(reservation);
         }
-        bool is_available = (room_info["capacity"] == room_info["maxCapacity"]) ? true : false; 
+        bool is_available = (room_info["capacity"] == room_info["maxCapacity"]) ? false : true; 
         Room* room = new Room(room_info["id"], room_info["maxCapacity"], room_info["capacity"], room_info["price"], is_available , reservations);
     }
     rooms_file.close();
