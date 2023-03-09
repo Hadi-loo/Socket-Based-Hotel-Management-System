@@ -29,7 +29,6 @@ int connectServer(string host_name ,int port) {
     }
     else
         printf("client Connected to the server\n");
-        
     return fd;
 }
 

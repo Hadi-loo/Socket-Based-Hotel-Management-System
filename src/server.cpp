@@ -44,6 +44,7 @@ int acceptClient(int server_fd) {
     return client_fd;
 }
 
+
 int main(int argc, char const *argv[]) {
     int server_fd, new_socket, max_sd;
 
@@ -67,9 +68,11 @@ int main(int argc, char const *argv[]) {
     hotel_managment.set_server_port(server_port);
 
     vector<User*> users = server_parser.parse_users(USERSINFO_FILE_NAME);
+    vector<Room*> rooms = server_parser.parse_rooms(ROOMSINFO_FILE_NAME);
     hotel_managment.add_users(users);
+    hotel_managment.add_rooms(rooms);
+    hotel_managment.add_reservations(rooms);
 
-    
 
     string log_message = "Server is up and running on " + server_ip_address + ":" + to_string(server_port) + "...\n";
     server_logger.log(SERVER_LOG_FILE_NAME, log_message);
