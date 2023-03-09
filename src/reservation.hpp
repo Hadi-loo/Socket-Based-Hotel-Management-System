@@ -16,6 +16,7 @@ private:
 public:
     Reservation(int costumer_id, int room_id, int number_of_beds, Date check_in_date, Date check_out_date);
     ~Reservation();
+    void show_info();
 
 };
 

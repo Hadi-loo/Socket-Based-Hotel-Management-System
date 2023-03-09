@@ -1,4 +1,6 @@
 #include "reservation.hpp"
+#include "iostream"
+
 
 Reservation::Reservation(int costumer_id, int room_id, int number_of_beds, Date check_in_date, Date check_out_date) {
     this->costumer_id = costumer_id;
@@ -11,4 +13,12 @@ Reservation::Reservation(int costumer_id, int room_id, int number_of_beds, Date 
 Reservation::~Reservation() {
     // TODO
     
+}
+
+void Reservation::show_info(){
+    cout << "Costumer ID: " << costumer_id << endl;
+    cout << "Room ID: " << room_id << endl;
+    cout << "Number of Beds: " << number_of_beds << endl;
+    cout << "Check In Date: " << check_in_date.get_year() << "/" << check_in_date.get_month() << "/" << check_in_date.get_day() << endl;
+    cout << "Check Out Date: " << check_out_date.get_year() << "/" << check_out_date.get_month() << "/" << check_out_date.get_day() << endl;
 }
