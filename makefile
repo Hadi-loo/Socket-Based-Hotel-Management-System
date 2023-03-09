@@ -29,6 +29,9 @@ ClientExecutableSensitivityList = \
 	$(BIN_DIR)/client.o \
 	$(BIN_DIR)/parser.o \
 	$(BIN_DIR)/user.o \
+	$(BIN_DIR)/room.o \
+	$(BIN_DIR)/reservation.o \
+	$(BIN_DIR)/date.o \
 
 ServerSensitivityList = \
 	$(SRC_DIR)/server.cpp \
