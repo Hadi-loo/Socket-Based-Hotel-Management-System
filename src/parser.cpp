@@ -51,17 +51,21 @@ vector<Room*> Parser::parse_rooms(string rooms_file_name){
     vector<Room*> rooms;
     vector<Reservation*> reservations;
     for (auto room_info : j["rooms"]) {
-        reservations.clear();                                                                                           // can be replaced by an smart pointer
-        for (auto reservation_info : room_info["users"]) {
-            vector<string> checkInDate = split_string(reservation_info["checkInDate"], '-');
-            vector<string> checkOutDate = split_string(reservation_info["checkInDate"], '-');
+        reservations.clear();                  
+        nlohmann::json user_array = room_info["users"];                                                                          // can be replaced by an smart pointer
+        for (auto reservation_info : user_array) {
+            vector<string> checkInDate = split_string(reservation_info["reserveDate"], '-');
+            vector<string> checkOutDate = split_string(reservation_info["checkoutDate"], '-');
             Date _checkInDate = Date(stoi(checkInDate[2]), stoi(checkInDate[1]), stoi(checkInDate[0]));
             Date _checkOutDate = Date(stoi(checkOutDate[2]), stoi(checkOutDate[1]), stoi(checkOutDate[0]));
-            Reservation* reservation = new Reservation(reservation_info["id"], room_info["number"] , reservation_info["roomNumber"], _checkInDate , _checkOutDate);
+            string temp = room_info["number"];
+            Reservation* reservation = new Reservation(reservation_info["id"], stoi(temp) , reservation_info["numOfBeds"], _checkInDate , _checkOutDate);
             reservations.push_back(reservation);
         }
-        bool is_available = (room_info["capacity"] == room_info["maxCapacity"]) ? false : true; 
-        Room* room = new Room(room_info["id"], room_info["maxCapacity"], room_info["capacity"], room_info["price"], is_available , reservations);
+        bool is_available = (room_info["status"] == 1) ? false : true;
+        string temp = room_info["number"];
+        Room* room = new Room(stoi(temp), room_info["maxCapacity"], room_info["capacity"], room_info["price"], is_available , reservations);
+        rooms.push_back(room);
     }
     rooms_file.close();
     return rooms;
