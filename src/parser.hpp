@@ -6,6 +6,7 @@
 #include <vector>
 #include "json.hpp"
 #include "user.hpp"
+#include "room.hpp"
 using namespace std;
 
 class Parser {
@@ -16,6 +17,8 @@ public:
     ~Parser();
     void parse_config(string config_file, string &hostName, int &port);
     vector<User*> parse_users(string users_file);
+    vector<Room*> parse_rooms(string rooms_file);
+    vector<string> split_string(const string& input, char delimiter);
     
 };
 

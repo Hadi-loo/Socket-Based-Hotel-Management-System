@@ -1,4 +1,7 @@
 #include "parser.hpp"
+// #include "utils.hpp"
+#include <iostream>
+
 
 Parser::Parser(string configs_path) {
     this->configs_path = configs_path;
@@ -19,7 +22,6 @@ void Parser::parse_config(string config_file_name, string &hostName, int &port) 
     return;
 }
 
-#include <iostream>
 
 vector<User*> Parser::parse_users(string users_file_name) {
     std::ifstream users_file;
@@ -38,4 +40,23 @@ vector<User*> Parser::parse_users(string users_file_name) {
     }
     users_file.close();
     return users;
+}
+
+
+vector<string> Parser::split_string(const string& input, char delimiter){
+    vector<string> words;
+    string substring;
+    for (char c : input){
+        if (c == delimiter){
+            words.push_back(substring);
+            substring.clear();
+        }
+        else{
+            substring += c;
+        }
+    }
+    if (!substring.empty()){
+        words.push_back(substring);
+    }
+    return words;
 }
