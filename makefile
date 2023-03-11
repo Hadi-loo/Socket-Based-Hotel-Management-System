@@ -19,7 +19,7 @@ ServerExecutableSensitivityList = \
 	$(BIN_DIR)/server.o \
 	$(BIN_DIR)/parser.o \
 	$(BIN_DIR)/logger.o \
-	$(BIN_DIR)/HotelManagment.o \
+	$(BIN_DIR)/HotelManagement.o \
 	$(BIN_DIR)/user.o \
 	$(BIN_DIR)/room.o \
 	$(BIN_DIR)/reservation.o \
@@ -37,7 +37,7 @@ ServerSensitivityList = \
 	$(SRC_DIR)/server.cpp \
 	$(SRC_DIR)/parser.hpp \
 	$(SRC_DIR)/logger.hpp \
-	$(SRC_DIR)/HotelManagment.hpp \
+	$(SRC_DIR)/HotelManagement.hpp \
 	$(SRC_DIR)/user.hpp \
 	$(SRC_DIR)/defs.hpp \
 
@@ -46,9 +46,9 @@ ClientSensitivityList = \
 	$(SRC_DIR)/parser.hpp \
 	$(SRC_DIR)/defs.hpp \
 
-HotelManagmentSensitivityList = \
-	$(SRC_DIR)/HotelManagment.cpp \
-	$(SRC_DIR)/HotelManagment.hpp \
+HotelManagementSensitivityList = \
+	$(SRC_DIR)/HotelManagement.cpp \
+	$(SRC_DIR)/HotelManagement.hpp \
 	$(SRC_DIR)/user.hpp \
 	$(SRC_DIR)/room.hpp \
 	$(SRC_DIR)/reservation.hpp \
@@ -105,8 +105,8 @@ $(BIN_DIR)/parser.o: $(ParserSensitivityList)
 $(BIN_DIR)/logger.o: $(LoggerSensitivityList)
 	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/logger.cpp -o $(BIN_DIR)/logger.o
 
-$(BIN_DIR)/HotelManagment.o: $(HotelManagmentSensitivityList)
-	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/HotelManagment.cpp -o $(BIN_DIR)/HotelManagment.o
+$(BIN_DIR)/HotelManagement.o: $(HotelManagementSensitivityList)
+	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/HotelManagement.cpp -o $(BIN_DIR)/HotelManagement.o
 
 $(BIN_DIR)/user.o: $(UserSensitivityList)
 	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/user.cpp -o $(BIN_DIR)/user.o

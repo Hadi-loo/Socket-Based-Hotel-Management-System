@@ -32,21 +32,39 @@ int connectServer(string host_name ,int port) {
     return fd;
 }
 
+void authentication_menu(int server_fd, Parser* client_parser) {
+    cout << ">> ";
+    string input;
+    vector<string> parsed_input;
+    cin >> input;
+    parsed_input = client_parser->split_string(input, ' ');
+    // switch case for signin, signup, exit
+
+
+
+}
+
 int main(int argc, char const *argv[]) {
-    char buff[1024] = {0};
+    char buff[MAX_BUFFER_SIZE] = {0};
 
     Parser client_parser(CONFIGS_PATH);
     string server_ip_address;
     int server_port;
     client_parser.parse_config(CONFIG_FILE_NAME, server_ip_address, server_port);
     int server_fd = connectServer(server_ip_address, server_port);
+    string menu = "auth";
 
     // UDP and select must be added
 
     while (1) {
-        read(0, buff, 1024);
+        write(1, ">> ", 3);
+        read(0, buff, MAX_BUFFER_SIZE);
+        string message = menu.append(" ").append(buff);
+        send(server_fd, message.c_str(), strlen(message.c_str()), 0);
         send(server_fd, buff, strlen(buff), 0);
-        memset(buff, 0, 1024);
+        memset(buff, 0, MAX_BUFFER_SIZE);
+        read(server_fd, buff, MAX_BUFFER_SIZE);
+        write(1, buff, strlen(buff));
     }
 
     return 0;

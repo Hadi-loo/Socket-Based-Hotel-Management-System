@@ -11,7 +11,7 @@
 #include "defs.hpp"
 #include "parser.hpp"
 #include "logger.hpp"
-#include "HotelManagment.hpp"
+#include "HotelManagement.hpp"
 
 using namespace std;
 
@@ -50,13 +50,13 @@ int main(int argc, char const *argv[]) {
 
     Parser server_parser(CONFIGS_PATH);
     Logger server_logger(LOGS_PATH);
-    HotelManagment hotel_managment;
+    HotelManagement hotel_managment;
     
     string server_ip_address;
     int server_port;
     server_parser.parse_config(CONFIG_FILE_NAME, server_ip_address, server_port);
     
-    char buffer[1024] = {0};
+    char buffer[MAX_BUFFER_SIZE] = {0};
     fd_set master_set, working_set;
     server_fd = setupServer(server_port , server_ip_address);
 
@@ -93,7 +93,7 @@ int main(int argc, char const *argv[]) {
                 
                 else {                                                      // client sending msg
                     int bytes_received;
-                    bytes_received = recv(i , buffer, 1024, 0);
+                    bytes_received = recv(i , buffer, MAX_BUFFER_SIZE, 0);
                     if (bytes_received == 0) { // EOF
                         printf("client fd = %d closed\n", i);
                         close(i);
@@ -102,6 +102,9 @@ int main(int argc, char const *argv[]) {
                     }
                     log_message = "Received message from client fd = " + to_string(i) + " : " + buffer;
                     server_logger.log(SERVER_LOG_FILE_NAME, log_message);
+                    vector<string> parsed_message = server_parser.split_string(buffer, ' ');
+                    string response = hotel_managment.handle_request(parsed_message);
+                    send(i, response.c_str(), response.length(), 0);
                     memset(buffer, 0, 1024);
                 }
             }

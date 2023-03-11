@@ -11,7 +11,7 @@
 using namespace std;
 
 
-class HotelManagment {
+class HotelManagement {
 private:
     vector <User*> users;
     vector <Reservation*> reservations;
@@ -21,8 +21,8 @@ private:
     int server_port;
     
 public:
-    HotelManagment();
-    ~HotelManagment();
+    HotelManagement();
+    ~HotelManagement();
 
     void set_server_ip(string server_ip);
     void set_server_port(int server_port);
@@ -35,6 +35,8 @@ public:
     
     void add_reservation(Reservation* reservation);
     void add_reservations(vector<Room*> reservations);
+
+    string handle_request(vector<string> request);
 
 };
 
