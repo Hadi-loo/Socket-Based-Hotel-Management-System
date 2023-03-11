@@ -7,6 +7,7 @@
 #include "reservation.hpp"
 #include "room.hpp"
 #include "date.hpp"
+#include "sha2.h"
 
 using namespace std;
 

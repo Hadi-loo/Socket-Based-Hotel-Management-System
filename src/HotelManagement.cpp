@@ -55,5 +55,27 @@ void HotelManagement::add_reservations(vector <Room*> rooms){
 
 string HotelManagement::handle_request(vector<string> request){
     // TODO
+    // handel request.size() == 0 in server.cpp file
+    string command_type = request[0];
+    if(command_type == "Signup" && request.size() == 2){
+        // handel merging input from the server.cpp file
+    }
+    else if(command_type == "Signin" && request.size() == 2){
+        // TO DO
+    }
+    else if(command_type == "view" && request.size() == 3){                                                   // 5.1 5.2 5.3 : view commands 
+        if(request[1] == "my"){}
+        else if(request[1] == "users"){}
+        else if(request[1] == "rooms"){}
+        else{
+            // Error Handler
+        }
+    }
+    /*
+    To DO: Add other commands
+    */
+    else{
+        // Error Handler
+    }
     return "OK\n";
 }
