@@ -37,7 +37,8 @@ public:
     void add_reservation(Reservation* reservation);
     void add_reservations(vector<Room*> reservations);
 
-    string handle_request(vector<string> request);
+    string handle_request(vector<string> request , int user_fd);
+    bool authorization_confirmation(int file_descriptor);
 
 };
 

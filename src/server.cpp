@@ -103,7 +103,7 @@ int main(int argc, char const *argv[]) {
                     log_message = "Received message from client fd = " + to_string(i) + " : " + buffer;
                     server_logger.log(SERVER_LOG_FILE_NAME, log_message);
                     vector<string> parsed_message = server_parser.split_string(buffer, ' ');
-                    string response = hotel_managment.handle_request(parsed_message);
+                    string response = hotel_managment.handle_request(parsed_message , i);
                     send(i, response.c_str(), response.length(), 0);
                     memset(buffer, 0, 1024);
                 }
