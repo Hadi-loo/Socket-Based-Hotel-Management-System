@@ -56,7 +56,7 @@ public:
     nlohmann::json handle_signup_info(nlohmann::json request);
     nlohmann::json handle_signin(nlohmann::json request, int user_fd);
     nlohmann::json handle_signout(nlohmann::json request, int user_fd);
-    
+    nlohmann::json handle_get_user_info(nlohmann::json request, int user_fd);
 
 };
 

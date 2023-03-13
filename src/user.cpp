@@ -1,6 +1,7 @@
 #include "user.hpp"
 #include <iostream>
 
+
 User::User(int _id, string _username, string _password, bool _is_admin, int _balance, string _phone, string _address) {
     id = _id;
     username = _username;
@@ -24,12 +25,9 @@ User::User(int _id, string _username) {
     is_admin = false;
 }
 
+
 int User::get_id() {
     return id;
-}
-
-int User::get_user_fd() {
-    return user_fd;
 }
 
 string User::get_username() {
@@ -39,6 +37,31 @@ string User::get_username() {
 string User::get_password() {
     return password;
 }
+
+bool User::is__admin() {
+    return is_admin;
+}
+
+int User::get_balance() {
+    return balance;
+}
+
+string User::get_phone() {
+    return phone;
+}
+
+string User::get_address() {
+    return address;
+}
+
+int User::get_user_fd() {
+    return user_fd;
+}
+
+bool User::is_signed_in() {
+    return signed_in;
+}
+
 
 void User::set_password(string _password) {
     password = _password;
@@ -56,6 +79,7 @@ void User::set_address(string _address) {
     address = _address;
 }
 
+
 void User::show_info() {
     cout << "---------------User Info---------------" << endl;
     cout << "ID: " << id << endl;
@@ -70,6 +94,25 @@ void User::show_info() {
     cout << "---------------------------------------" << endl;
 }
 
+string User::get_info() {
+    string info = "";
+    info += "---------------" + username + "---------------\n";
+    info += "ID: " + to_string(id) + "\n";
+    info += "Username: " + username + "\n";
+    info += "Password: " + password + "\n";
+    if (!is_admin) {        
+        info += "Balance: " + to_string(balance) + "\n";
+        info += "Phone Number: " + phone + "\n";
+        info += "Address: " + address + "\n";
+        info += "You are one of our beloved customers :)\n";
+    } else {
+        info += "You are one of our admins\n";
+    } 
+    info += "---------------------------------------\n";
+    return info;
+}
+
+
 void User::sign_in(int _user_fd) {
     signed_in = true;
     user_fd = _user_fd;
@@ -78,14 +121,6 @@ void User::sign_in(int _user_fd) {
 void User::sign_out() {
     signed_in = false;
     user_fd = -1;
-}
-
-bool User::is_signed_in() {
-    return signed_in;
-}
-
-bool User::is__admin() {
-    return is_admin;
 }
 
 

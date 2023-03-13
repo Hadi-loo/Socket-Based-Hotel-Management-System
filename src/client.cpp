@@ -85,7 +85,7 @@ void main_menu(int server_fd, bool &logged_in, Parser &client_parser) {
     while (1) {
 
         show_main_menu();
-        pretty_write(">> ", "cyan");
+        pretty_write("\n>> ", "cyan");
         memset(buff, 0, MAX_BUFFER_SIZE);
         read(0, buff, MAX_BUFFER_SIZE);
 
@@ -109,8 +109,13 @@ void main_menu(int server_fd, bool &logged_in, Parser &client_parser) {
             }
         }
 
-        else if (input[0] == "1") {
-
+        else if (input[0] == "1" || input[0] == "view_user" || input[0] == "show_user") {
+            bool should_continue = handle_show_user_info(logged_in, request, response, server_fd, buff, input);
+            if (should_continue) {
+                continue;
+            } else {
+                break;
+            }
         }
 
         else if (input[0] == "2") {
@@ -153,6 +158,7 @@ void main_menu(int server_fd, bool &logged_in, Parser &client_parser) {
 }
 
 void show_main_menu() {
+    cout << "\n";
     cout << MAGENTA;
     cout << "____________________MAIN MENU____________________\n";
     cout << RESET;
@@ -166,6 +172,8 @@ void show_main_menu() {
     cout << YELLOW << "8. " << RESET << "Leave room\n";
     cout << YELLOW << "9. " << RESET << "Rooms status\n";
     cout << YELLOW << "0. " << RESET << "Logout\n";
+    cout << MAGENTA;
+    cout << "_________________________________________________\n";
 }
 
 void pretty_write(string message, string color) {
@@ -376,4 +384,50 @@ bool handle_signout(bool &logged_in, nlohmann::json &request, nlohmann::json &re
 
     return true;
 }
+
+bool handle_show_user_info(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input) {
+    // check if user is logged in
+    if (!logged_in) {
+        // TODO: print error message
+        pretty_write("You are not logged in\n", "red");
+        return true;
+    }
+
+    if (input.size() != 1) {
+        // TODO: print error message
+        pretty_write("Invalid arguments\n", "red");
+        return true;
+    }
+
+    request["command"] = "get_user_info";
+
+    send(server_fd, request.dump().c_str(), request.dump().size(), 0);
+    memset(buff, 0, MAX_BUFFER_SIZE);
+    read(server_fd, buff, MAX_BUFFER_SIZE);
+    response = nlohmann::json::parse(buff);
+
+    // check if get_user_info was successful or not
+    if (response["status"] == 404) {
+        // CODE 404: user not found
+        // TODO: print error message
+        pretty_write(response["message"], "red");
+        pretty_write("\n", "red");
+        return true;
+    }
+
+    else if (response["status"] == 100) {
+        // CODE 100: get_user_info was successful
+        // TODO: print success message
+        pretty_write(response["message"], "green");
+        pretty_write("\n", "green");
+        pretty_write(response["summary"], "magenta");
+        return true;
+    }
+
+    return true;
+
+}
+
+
+
 
