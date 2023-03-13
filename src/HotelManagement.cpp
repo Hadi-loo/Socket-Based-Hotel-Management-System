@@ -155,6 +155,10 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
         return handle_get_user_info(request, user_fd);
     }
 
+    else if (command == "get_all_users") {
+        return handle_get_all_users(request, user_fd);
+    }
+
     // TODO: Add other commands
 
     else {
@@ -296,4 +300,26 @@ nlohmann::json HotelManagement::handle_get_user_info(nlohmann::json request, int
     response["message"] = "user not found";
     return response;
 }
+
+nlohmann::json HotelManagement::handle_get_all_users(nlohmann::json request, int user_fd) {
+    nlohmann::json response;
+    
+    if (users.empty()) {
+        // CODE 404: user not found
+        response["status"] = 404;
+        response["message"] = "users not found";
+        return response;
+    }
+
+    else {
+        response["status"] = 100;
+        response["message"] = "all users info retrieved successfully";
+        for (auto user:users){
+            response["summary"].push_back(user->get_info());
+        }
+        return response;
+    }
+
+}
+
 
