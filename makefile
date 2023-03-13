@@ -24,6 +24,7 @@ ServerExecutableSensitivityList = \
 	$(BIN_DIR)/room.o \
 	$(BIN_DIR)/reservation.o \
 	$(BIN_DIR)/date.o \
+	$(BIN_DIR)/sha2.o \
 
 ClientExecutableSensitivityList = \
 	$(BIN_DIR)/client.o \
@@ -53,6 +54,7 @@ HotelManagementSensitivityList = \
 	$(SRC_DIR)/room.hpp \
 	$(SRC_DIR)/reservation.hpp \
 	$(SRC_DIR)/date.hpp \
+	$(SRC_DIR)/sha2.h \
 
 ParserSensitivityList = \
 	$(SRC_DIR)/parser.cpp \
@@ -81,6 +83,9 @@ ReservationSensitivityList = \
 DateSensitivityList = \
 	$(SRC_DIR)/date.cpp \
 	$(SRC_DIR)/date.hpp \
+
+Sha2SensitivityList = \
+	$(SRC_DIR)/sha2.h \
 
 
 # Compile
@@ -119,6 +124,9 @@ $(BIN_DIR)/reservation.o: $(ReservationSensitivityList)
 
 $(BIN_DIR)/date.o: $(DateSensitivityList)
 	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/date.cpp -o $(BIN_DIR)/date.o
+
+$(BIN_DIR)/sha2.o: $(Sha2SensitivityList)
+	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/sha2.cpp -o $(BIN_DIR)/sha2.o
 
 .PHONY: clean
 clean:
