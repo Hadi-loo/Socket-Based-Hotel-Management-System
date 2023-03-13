@@ -159,6 +159,10 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
         return handle_get_all_users(request, user_fd);
     }
 
+    else if (command == "get_rooms_info") {
+        return handle_get_rooms_info(request, user_fd);
+    }
+
     // TODO: Add other commands
 
     else {
@@ -320,6 +324,26 @@ nlohmann::json HotelManagement::handle_get_all_users(nlohmann::json request, int
         return response;
     }
 
+}
+
+nlohmann::json HotelManagement::handle_get_rooms_info(nlohmann::json request, int user_fd) {
+    nlohmann::json response;
+
+    if (rooms.empty()) {
+        // CODE 404: user not found
+        response["status"] = 404;
+        response["message"] = "rooms not found";
+        return response;
+    }
+
+    else {
+        response["status"] = 100;
+        response["message"] = "all rooms info retrieved successfully";
+        for (auto room:rooms){
+            response["summary"].push_back(room->get_info());
+        }
+        return response;
+    }
 }
 
 

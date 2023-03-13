@@ -29,3 +29,24 @@ void Room::show_info(){
     }
 }
 
+string Room::get_info(){
+    string info = "";
+    info += "---------------Room" + to_string(id) + "---------------\n";
+    info += "ID: " + to_string(id) + "\n";
+    info += "Max Capacity: " + to_string(max_capacity) + "\n";
+    info += "Available Capacity: " + to_string(available_capacity) + "\n";
+    info += "Price: " + to_string(price) + "\n";
+    if (is_available) {
+        info += "This room is available\n";
+    } else {
+        info += "This room is unavailable\n";
+    }
+    info += "Reservations: \n";
+    for (int i = 0; i < reservations.size(); i++) {
+        info += "____________Reservation" + to_string(i+1) + "____________\n";
+        info += reservations[i]->get_info();
+    }
+    info += "----------------------------------------\n";
+    return info;
+}
+

@@ -28,5 +28,7 @@ bool handle_signin(bool &logged_in, nlohmann::json &request, nlohmann::json &res
 bool handle_signout(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
 bool handle_show_user_info(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
 bool handle_show_all_users(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
+bool handle_show_rooms_info(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
+
 
 #endif

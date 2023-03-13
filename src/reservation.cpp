@@ -22,3 +22,13 @@ void Reservation::show_info(){
     cout << "Check In Date: " << check_in_date.get_year() << "/" << check_in_date.get_month() << "/" << check_in_date.get_day() << endl;
     cout << "Check Out Date: " << check_out_date.get_year() << "/" << check_out_date.get_month() << "/" << check_out_date.get_day() << endl;
 }
+
+string Reservation::get_info(){
+    string info = "";
+    info += "Costumer ID: " + to_string(costumer_id) + "\n";
+    info += "Room ID: " + to_string(room_id) + "\n";
+    info += "Number of Beds: " + to_string(number_of_beds) + "\n";
+    info += "Check In Date: " + to_string(check_in_date.get_year()) + "/" + to_string(check_in_date.get_month()) + "/" + to_string(check_in_date.get_day()) + "\n";
+    info += "Check Out Date: " + to_string(check_out_date.get_year()) + "/" + to_string(check_out_date.get_month()) + "/" + to_string(check_out_date.get_day()) + "\n";
+    return info;
+}
