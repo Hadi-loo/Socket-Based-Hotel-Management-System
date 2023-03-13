@@ -74,16 +74,19 @@ vector<string> Parser::split_string(const string& input, char delimiter){
     vector<string> words;
     string substring;
     for (char c : input){
-        if (c == delimiter){
-            words.push_back(substring);
-            substring.clear();
+        if (c == delimiter || c == '\n'){
+            if (!substring.empty()) {
+                words.push_back(substring);
+                substring.clear();
+            }
         }
-        else{
+        else {
             substring += c;
         }
     }
     if (!substring.empty()){
-        words.push_back(substring);
+        if ((substring[substring.size() - 1] != delimiter) || (substring[substring.size() - 1] != '\n')) 
+            words.push_back(substring);
     }
     return words;
 }

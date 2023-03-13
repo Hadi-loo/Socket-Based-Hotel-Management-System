@@ -1,5 +1,4 @@
-#include<string>
-
+#include <string>
 
 
 const std::string er101 = "Err -> 101: The desired room was not found.\n";

@@ -11,7 +11,6 @@ Logger::~Logger(){
 void Logger::log(string log_file_name, string message){
     log_file.open(logs_path + "/" + log_file_name, ios::app);
     log_file << "[" << current_time() << "] " << message;
-    cout << "[" << current_time() << "] " << message;
     log_file.close();
 }
 
