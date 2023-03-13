@@ -22,6 +22,6 @@ int connectServer(string host_name ,int port);
 void authentication_menu(int server_fd, bool &logged_in, Parser &client_parser);
 void main_menu(int server_fd, bool &logged_in, Parser &client_parser);
 void show_main_menu();
-
+void pretty_write(string message, string color);
 
 #endif
