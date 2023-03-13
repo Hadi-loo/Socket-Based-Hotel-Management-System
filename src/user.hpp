@@ -33,7 +33,7 @@ public:
 
     void show_info();
 
-    void sign_in(){signed_in = true;}
+    void sign_in(int _user_fd);
     void sign_out(){signed_in = false;}
     bool is_signed_in(){return signed_in;}
     void set_user_fd(int _user_fd){user_fd = _user_fd;}

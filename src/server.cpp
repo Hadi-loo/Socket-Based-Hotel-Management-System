@@ -111,6 +111,7 @@ int main(int argc, char const *argv[]) {
                     request = nlohmann::json::parse(buffer);
                     response = hotel_managment.handle_request(request, i);
 
+                    cout << "Sending response to client fd = " << i << ": " << response.dump() << endl;
                     send(i, response.dump().c_str(), response.dump().length(), 0);
                     memset(buffer, 0, MAX_BUFFER_SIZE);
                 }

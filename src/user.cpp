@@ -57,3 +57,10 @@ void User::show_info() {
     }
     cout << "---------------------------------------" << endl;
 }
+
+void User::sign_in(int _user_fd) {
+    signed_in = true;
+    user_fd = _user_fd;
+}
+
+

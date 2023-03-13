@@ -127,82 +127,18 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
     nlohmann::json response;
     string command = request["command"];
 
-    if (command == "signup"){
-        int id = create_new_user_id();
-        if (username_exists(request["username"])){
-            // send error message to client
-            // CODE 451: username already exists
-            response["status"] = 451;
-            return response;
-        }
-        User* user = new User(id, request["username"]);
-        user->set_user_fd(user_fd);
-        users.push_back(user);
-
-        // CODE 311: user created successfully
-        response["status"] = 311;
-        return response;
+    if (command == "signup") {
+        return handle_signup(request);
     }
 
-    else if (command == "change_info") {
-        // check if balance is a number
-        if (!is_number(request["balance"])) {
-            // send error message to client
-            // CODE 503: error in input arguments
-            response["status"] = 503;
-            response["message"] = "balance has to be a number";
-            return response;
-        }
-        
-        // check if age phone_number is a number
-        if (!is_number(request["phone_number"])) {
-            // send error message to client
-            // CODE 503: error in input arguments
-            // delete user
-
-            response["status"] = 503;
-            response["message"] = "phone number has to be a number";
-            return response;
-        }
-
-        User* user = get_user_by_username(request["username"]);
-        if (user == NULL) {
-            // send error message to client
-            // CODE 430: user not found
-            response["status"] = 430;
-            return response;
-        }
-
-        user->set_password(request["password"]);
-        string balance = request["balance"];
-        user->set_balance(stoi(balance));
-        user->set_phone(request["phone_number"]);
-        user->set_address(request["address"]);
-
-        // CODE 231: user info changed successfully
-
-        user->show_info();
-
-        response["status"] = 231;
-        return response;
+    else if (command == "signup_info") {
+        return handle_signup_info(request);
     }
 
-    else if(command == "signin" && request.size() == 3){
-        bool found = false;
-        for (auto user:users){
-            if(request[1] == user->get_username() && request[2] == user->get_password()){
-                found = true;
-                user->sign_in();
-                user->set_user_fd(user_fd);
-            }
-        }
-        if(found){
-            // message 230
-        }
-        else{
-            // Error 430
-        }
+    else if (command == "signin") {
+        return handle_signin(request, user_fd);
     }
+
     if(authorization_confirmation(user_fd) == false){
             // 503 error and return
     }
@@ -254,3 +190,93 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
     }
     return "OK\n";
 }
+
+nlohmann::json HotelManagement::handle_signup(nlohmann::json request) {
+    nlohmann::json response;
+    int id = create_new_user_id();
+    if (username_exists(request["username"])){
+        // send error message to client
+        // CODE 451: username already exists
+        response["status"] = 451;
+        return response;
+    }
+    User* user = new User(id, request["username"]);
+    users.push_back(user);
+
+    // CODE 311: user created successfully
+    response["status"] = 311;
+    return response;
+}
+
+nlohmann::json HotelManagement::handle_signup_info(nlohmann::json request) {
+    nlohmann::json response;
+    User* user = get_user_by_username(request["username"]);
+    if (user == NULL) {
+        // send error message to client
+        // CODE 430: user not found
+        response["status"] = 430;
+        return response;
+    }
+    
+    // check if balance is a number
+    if (!is_number(request["balance"])) {
+        // send error message to client
+        // CODE 503: error in input arguments
+        // delete user
+        remove_user_by_username(request["username"]);
+        response["status"] = 503;
+        response["message"] = "balance has to be a number";
+        return response;
+    }
+    
+    // check if age phone_number is a number
+    if (!is_number(request["phone_number"])) {
+        // send error message to client
+        // CODE 503: error in input arguments
+        // delete user
+        remove_user_by_username(request["username"]);
+        response["status"] = 503;
+        response["message"] = "phone number has to be a number";
+        return response;
+    }
+
+    user->set_password(request["password"]);
+    string balance = request["balance"];
+    user->set_balance(stoi(balance));
+    user->set_phone(request["phone_number"]);
+    user->set_address(request["address"]);
+
+    // send success message to client
+    // CODE 231: user info submitted successfully
+
+    user->show_info();
+
+    response["status"] = 231;
+    response["message"] = "user info submitted successfully";
+    return response;
+} 
+
+nlohmann::json HotelManagement::handle_signin(nlohmann::json request, int user_fd) {
+    nlohmann::json response;
+    for (auto user:users){
+        if(request["username"] == user->get_username()) {
+            if (request["password"] == user->get_password()){
+                user->sign_in(user_fd);
+                // CODE 230: user signed in successfully
+                response["status"] = 230;
+                response["message"] = "user signed in successfully";
+                return response;
+            } else {
+                // CODE 430: password is incorrect
+                response["status"] = 430;
+                response["message"] = "password is incorrect";
+                return response;
+            }
+        }
+    }
+    // CODE 430: user not found
+    response["status"] = 430;
+    response["message"] = "user not found";
+    return response;
+}
+
