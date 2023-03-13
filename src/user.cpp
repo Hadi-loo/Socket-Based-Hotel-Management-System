@@ -28,6 +28,18 @@ int User::get_id() {
     return id;
 }
 
+int User::get_user_fd() {
+    return user_fd;
+}
+
+string User::get_username() {
+    return username;
+}
+
+string User::get_password() {
+    return password;
+}
+
 void User::set_password(string _password) {
     password = _password;
 }
@@ -61,6 +73,19 @@ void User::show_info() {
 void User::sign_in(int _user_fd) {
     signed_in = true;
     user_fd = _user_fd;
+}
+
+void User::sign_out() {
+    signed_in = false;
+    user_fd = -1;
+}
+
+bool User::is_signed_in() {
+    return signed_in;
+}
+
+bool User::is__admin() {
+    return is_admin;
 }
 
 

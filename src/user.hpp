@@ -28,17 +28,17 @@ public:
     void set_address (string _address);
 
     int get_id();
-    string get_username(){return username;}
-    string get_password(){return password;}
+    int get_user_fd();
+    string get_username();
+    string get_password();
 
     void show_info();
 
     void sign_in(int _user_fd);
-    void sign_out(){signed_in = false;}
-    bool is_signed_in(){return signed_in;}
-    void set_user_fd(int _user_fd){user_fd = _user_fd;}
-    int get_user_fd(){return user_fd;}
-    bool _is_admin(){return is_admin;}
+    void sign_out();
+
+    bool is_signed_in();
+    bool is__admin();
 };
 
 #endif

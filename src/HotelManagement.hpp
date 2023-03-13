@@ -43,6 +43,7 @@ public:
 
     User* get_user_by_id(int id);
     User* get_user_by_username(string username);
+    User* get_user_by_fd(int fd);
 
     int create_new_user_id(void);
     bool username_exists(string username);
@@ -54,6 +55,7 @@ public:
     nlohmann::json handle_signup(nlohmann::json request);
     nlohmann::json handle_signup_info(nlohmann::json request);
     nlohmann::json handle_signin(nlohmann::json request, int user_fd);
+    nlohmann::json handle_signout(nlohmann::json request, int user_fd);
     
 
 };

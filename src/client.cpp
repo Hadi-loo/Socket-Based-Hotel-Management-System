@@ -57,7 +57,7 @@ void authentication_menu(int server_fd, bool &logged_in, Parser &client_parser) 
             }
         }
 
-        else if (input[0] == "signin") {
+        else if (input[0] == "signin" || input[0] == "login") {
             bool should_continue = handle_signin(logged_in, request, response, server_fd, buff, input, client_parser);
             if (should_continue) {
                 continue;
@@ -65,7 +65,7 @@ void authentication_menu(int server_fd, bool &logged_in, Parser &client_parser) 
         }
 
         else if (input[0] == "exit" || input[0] == "quit") {
-            pretty_write("OODAFEZ :(\n", "red");
+            pretty_write("OODAFEZ :(\n", "cyan");
             exit(0);
         }
 
@@ -85,9 +85,69 @@ void main_menu(int server_fd, bool &logged_in, Parser &client_parser) {
     while (1) {
 
         show_main_menu();
-        write(1, ">> ", 3);
+        pretty_write(">> ", "cyan");
         memset(buff, 0, MAX_BUFFER_SIZE);
         read(0, buff, MAX_BUFFER_SIZE);
+
+        input = client_parser.split_string(buff, ' ');
+        nlohmann::json request, response;
+
+        if (input.size() == 0) {
+            continue;
+        } else if (input.size() > 1) {
+            // TODO: print error message
+            pretty_write("Invalid command\n", "red");
+            continue;
+        }
+
+        if (input[0] == "0" || input[0] == "signout" || input[0] == "logout") {
+            bool should_continue = handle_signout(logged_in, request, response, server_fd, buff, input);
+            if (should_continue) {
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        else if (input[0] == "1") {
+
+        }
+
+        else if (input[0] == "2") {
+
+        }
+
+        else if (input[0] == "3") {
+
+        }
+
+        else if (input[0] == "4") {
+
+        }
+
+        else if (input[0] == "5") {
+
+        }
+
+        else if (input[0] == "6") {
+
+        }
+
+        else if (input[0] == "7") {
+
+        }
+
+        else if (input[0] == "8") {
+
+        }
+
+        else if (input[0] == "9") {
+
+        }
+
+        else {
+            pretty_write("Invalid command\n", "red");
+        }
 
     }
 }
@@ -276,5 +336,44 @@ bool handle_signin(bool &logged_in, nlohmann::json &request, nlohmann::json &res
     return true;
 }
 
+bool handle_signout(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input) {
 
+    // check if user is logged in
+    if (!logged_in) {
+        // TODO: print error message
+        pretty_write("You are not logged in\n", "red");
+        return true;
+    }
+
+    if (input.size() != 1) {
+        // TODO: print error message
+        pretty_write("Invalid arguments\n", "red");
+        return true;
+    }
+
+    request["command"] = "logout";
+
+    send(server_fd, request.dump().c_str(), request.dump().size(), 0);
+    memset(buff, 0, MAX_BUFFER_SIZE);
+    read(server_fd, buff, MAX_BUFFER_SIZE);
+    response = nlohmann::json::parse(buff);
+
+    // check if logout was successful or not
+    if (response["status"] == 404) {
+        // CODE 404: user not found
+        // TODO: print error message
+        pretty_write("User not found\n", "red");
+        return true;
+    }
+
+    else if (response["status"] == 201) {
+        // CODE 201: logout was successful
+        // TODO: print success message
+        logged_in = false;
+        pretty_write("Logout was successful\n", "green");
+        return false;
+    }
+
+    return true;
+}
 

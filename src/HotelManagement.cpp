@@ -89,6 +89,14 @@ User* HotelManagement::get_user_by_username(string username){
     return NULL;
 }
 
+User* HotelManagement::get_user_by_fd(int fd){
+    for (int i = 0; i < users.size(); i++){
+        if (users[i]->get_user_fd() == fd)
+            return users[i];
+    }
+    return NULL;
+}
+
 int HotelManagement::create_new_user_id(void){
     int max_id = 0;
     for (auto user:users){
@@ -139,56 +147,17 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
         return handle_signin(request, user_fd);
     }
 
-    if(authorization_confirmation(user_fd) == false){
-            // 503 error and return
-    }
-    // saving pointer to the current connected user
-    User* current_user;
-    for (auto user:users){
-        if(user->get_user_fd() == user_fd){
-            current_user = user;
-            break;        
-        }
-    }
-    if(command == "1" && request.size() == 1){                // 5.1 : view user information
-        current_user->show_info();
-    }
-    else if(command == "2" && request.size() == 1){                // 5.2 : view all users
-        if(current_user->_is_admin() == false){
-            // Error Handler -> 503 error
-        }
-        for (auto user:users){
-            user->show_info();
-        }
-    }
-    else if(command == "3" && request.size() == 1){                // 5.3: view all rooms
-        for (auto room:rooms){
-            room->show_info();
-        }
-    }
-    else if(command == "4" && request.size() == 6){                // 5.4:
-        
-    }
-    else if(command == "5" && request.size() == 1){                // 5.5
-    }
-    else if(command == "6" && request.size() == 1){                // 5.6
-    }
-    else if(command == "7" && request.size() == 1){                // 5.7
-    }
-    else if(command == "8" && request.size() == 1){                // 5.8
-    }
-    else if(command == "9" && request.size() == 1){                // 5.9
-    }
-    else if(command == "0" && request.size() == 1){                // 5.10
+    else if (command == "logout") {
+        return handle_signout(request, user_fd);
     }
 
-    /*
-    To DO: Add other commands
-    */
-    else{
+    // TODO: Add other commands
+
+    else {
         // Error Handler -> 503 error
     }
-    return "OK\n";
+
+    return nlohmann::json({"status", 100});
 }
 
 nlohmann::json HotelManagement::handle_signup(nlohmann::json request) {
@@ -198,6 +167,7 @@ nlohmann::json HotelManagement::handle_signup(nlohmann::json request) {
         // send error message to client
         // CODE 451: username already exists
         response["status"] = 451;
+        response["message"] = "username already exists";
         return response;
     }
     User* user = new User(id, request["username"]);
@@ -205,6 +175,7 @@ nlohmann::json HotelManagement::handle_signup(nlohmann::json request) {
 
     // CODE 311: user created successfully
     response["status"] = 311;
+    response["message"] = "user created successfully";
     return response;
 }
 
@@ -215,6 +186,7 @@ nlohmann::json HotelManagement::handle_signup_info(nlohmann::json request) {
         // send error message to client
         // CODE 430: user not found
         response["status"] = 430;
+        response["message"] = "user not found";
         return response;
     }
     
@@ -252,31 +224,52 @@ nlohmann::json HotelManagement::handle_signup_info(nlohmann::json request) {
     user->show_info();
 
     response["status"] = 231;
-    response["message"] = "user info submitted successfully";
+    response["message"] = "user's information submitted successfully";
     return response;
 } 
 
 nlohmann::json HotelManagement::handle_signin(nlohmann::json request, int user_fd) {
     nlohmann::json response;
-    for (auto user:users){
-        if(request["username"] == user->get_username()) {
-            if (request["password"] == user->get_password()){
-                user->sign_in(user_fd);
-                // CODE 230: user signed in successfully
-                response["status"] = 230;
-                response["message"] = "user signed in successfully";
-                return response;
-            } else {
-                // CODE 430: password is incorrect
-                response["status"] = 430;
-                response["message"] = "password is incorrect";
-                return response;
-            }
+    User* user = get_user_by_username(request["username"]);
+
+    if (user != NULL) {
+        if (request["password"] == user->get_password()){
+            user->sign_in(user_fd);
+            // CODE 230: user signed in successfully
+            response["status"] = 230;
+            response["message"] = "user signed in successfully";
+            return response;
+        } else {
+            // CODE 430: password is incorrect
+            response["status"] = 430;
+            response["message"] = "password is incorrect";
+            return response;
         }
     }
+
     // CODE 430: user not found
     response["status"] = 430;
     response["message"] = "user not found";
     return response;
 }
+
+nlohmann::json HotelManagement::handle_signout(nlohmann::json request, int user_fd) {
+    nlohmann::json response;
+    User* user = get_user_by_fd(user_fd);
+
+    if (user != NULL) {
+        user->sign_out();
+        // CODE 201: user signed out successfully
+        response["status"] = 201;
+        response["message"] = "user signed out successfully";
+        return response;
+    }
+
+    // CODE 404: user not found
+    response["status"] = 404;
+    response["message"] = "user not found";
+    return response;
+}
+
+
 
