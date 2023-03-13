@@ -3,11 +3,13 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 #include "user.hpp"
 #include "reservation.hpp"
 #include "room.hpp"
 #include "date.hpp"
 #include "sha2.h"
+#include "json.hpp"
 
 using namespace std;
 
@@ -30,6 +32,8 @@ public:
 
     void add_user(User* user);
     void add_users(vector<User*> users);
+    void remove_user_by_id(int id);
+    void remove_user_by_username(string username);
 
     void add_room(Room* room);
     void add_rooms(vector<Room*> rooms);
@@ -37,7 +41,14 @@ public:
     void add_reservation(Reservation* reservation);
     void add_reservations(vector<Room*> reservations);
 
-    string handle_request(vector<string> request , int user_fd);
+    User* get_user_by_id(int id);
+    User* get_user_by_username(string username);
+
+    int create_new_user_id(void);
+    bool username_exists(string username);
+    bool is_number(string str);
+    
+    nlohmann::json handle_request(nlohmann::json request, int user_fd);
     bool authorization_confirmation(int file_descriptor);
 
 };
