@@ -12,7 +12,7 @@
 #include "parser.hpp"
 #include "logger.hpp"
 #include "HotelManagement.hpp"
-
+#include "json.hpp"
 using namespace std;
 
 
@@ -51,6 +51,7 @@ int main(int argc, char const *argv[]) {
     Parser server_parser(CONFIGS_PATH);
     Logger server_logger(LOGS_PATH);
     HotelManagement hotel_managment;
+    nlohmann::json request, response;
     
     string server_ip_address;
     int server_port;
@@ -76,6 +77,7 @@ int main(int argc, char const *argv[]) {
 
     string log_message = "Server is up and running on " + server_ip_address + ":" + to_string(server_port) + "...\n";
     server_logger.log(SERVER_LOG_FILE_NAME, log_message);
+    cout << log_message;
 
     while (1) {
         working_set = master_set;
@@ -89,23 +91,28 @@ int main(int argc, char const *argv[]) {
                         max_sd = new_socket;
                     log_message = "New client connected with fd = " + to_string(new_socket) + "\n";
                     server_logger.log(SERVER_LOG_FILE_NAME, log_message);
+                    cout << log_message;
                 }
                 
                 else {                                                      // client sending msg
                     int bytes_received;
                     bytes_received = recv(i , buffer, MAX_BUFFER_SIZE, 0);
-                    if (bytes_received == 0) { // EOF
-                        printf("client fd = %d closed\n", i);
+                    if (bytes_received == 0) {                              // client closed connection
+                        // TODO: handle client disconnection
                         close(i);
                         FD_CLR(i, &master_set);
                         continue;
                     }
-                    log_message = "Received message from client fd = " + to_string(i) + " : " + buffer;
+
+                    log_message = "Received message from client fd = " + to_string(i) + ": " + buffer + "\n";
                     server_logger.log(SERVER_LOG_FILE_NAME, log_message);
-                    vector<string> parsed_message = server_parser.split_string(buffer, ' ');
-                    string response = hotel_managment.handle_request(parsed_message , i);
-                    send(i, response.c_str(), response.length(), 0);
-                    memset(buffer, 0, 1024);
+                    cout << log_message;
+
+                    request = nlohmann::json::parse(buffer);
+                    response = hotel_managment.handle_request(request, i);
+
+                    send(i, response.dump().c_str(), response.dump().length(), 0);
+                    memset(buffer, 0, MAX_BUFFER_SIZE);
                 }
             }
         }
