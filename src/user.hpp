@@ -20,9 +20,19 @@ private:
 public:
     User(int id, string username, string password, bool is_admin, int balance, string phone, string address);
     User(int id, string username, string password, bool is_admin);
-    void show_info();
+    User(int id, string username);
+
+    void set_password (string _password);
+    void set_balance (int _balance);
+    void set_phone (string _phone);
+    void set_address (string _address);
+
+    int get_id();
     string get_username(){return username;}
     string get_password(){return password;}
+
+    void show_info();
+
     void sign_in(){signed_in = true;}
     void sign_out(){signed_in = false;}
     bool is_signed_in(){return signed_in;}
