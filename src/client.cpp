@@ -137,8 +137,13 @@ void main_menu(int server_fd, bool &logged_in, bool &is_admin, Parser &client_pa
             }
         }
 
-        else if (input[0] == "4") {
-
+        else if (input[0] == "4" || input[0] == "book") {
+            bool should_continue = handle_book_room(logged_in, request, response, server_fd, buff, input , client_parser);
+            if (should_continue) {
+                continue;
+            } else {
+                break;
+            }
         }
 
         else if (input[0] == "5") {
@@ -600,8 +605,8 @@ bool handle_edit_info(bool &logged_in, bool &is_admin, nlohmann::json &request, 
         return true;
     }
 
-    else if (response["status"] == 312) {
-        // CODE 312: Information was changed successfully
+    else if (response["status"] == 110) {
+        // CODE 310: successfully done
         // TODO: print success message
         cout << GREEN << response["message"] << RESET << endl;
         return true;
@@ -612,3 +617,73 @@ bool handle_edit_info(bool &logged_in, bool &is_admin, nlohmann::json &request, 
 }
 
 
+bool handle_book_room(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input , Parser &client_parser) {
+    // check if user is logged in
+    if (!logged_in) {
+        // TODO: print error message
+        pretty_write("You are not logged in\n", "red");
+        return true;
+    }
+    
+    int room_num , num_of_beds;
+    string check_in_date , check_out_date;
+    
+    memset(buff, 0, MAX_BUFFER_SIZE);
+    read(0, buff, MAX_BUFFER_SIZE);
+    input = client_parser.split_string(buff, ' ');
+
+    if(input.size() != 5){
+        pretty_write("Invalid arguments\n", "red");                 // shouldn't be 503?
+        // CODE 503: Bad sequence of commands
+        return true;
+    }
+    
+    room_num = stoi(input[1]);
+    num_of_beds = stoi(input[2]);
+    check_in_date = input[3];
+    check_out_date = input[4];
+
+    /*                  !!!! Check correctness of inputs !!!!                   */
+
+    request["command"] = "book_room";
+    request["room_num"] = room_num;
+    request["num_of_beds"] = num_of_beds;
+    request["check_in_date"] = check_in_date;
+    request["check_out_date"] = check_out_date;
+
+
+    /*                  !!!! Check correctness of inputs !!!!                   */
+
+    send(server_fd, request.dump().c_str(), request.dump().size(), 0);
+    memset(buff, 0, MAX_BUFFER_SIZE);
+    read(server_fd, buff, MAX_BUFFER_SIZE);
+    
+    response = nlohmann::json::parse(buff);
+
+    // check if book_room was successful or not
+    if(response["status"] == 108){
+        // CODE 108: Not enogh money of purse
+        // TODO: print error message
+        cout << RED << response["message"] << RESET << endl;
+        return true;
+    }
+    else if(response["status"] == 101){
+        // CODE 101: Room is not available
+        // TODO: print error message
+        cout << RED << response["message"] << RESET << endl;
+        return true;
+    }
+    else if(response["status"] == 109){
+        // CODE 109: Room capcity is full
+        // TODO: print error message
+        cout << RED << response["message"] << RESET << endl;
+        return true;
+    }
+    else if(response["status"] == 503){
+        // CODE 503: Bad sequence of commands
+        // TODO: print error message
+        cout << RED << response["message"] << RESET << endl;
+        return true;
+    }
+    return true;
+}
