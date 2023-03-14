@@ -10,6 +10,8 @@
 #include "date.hpp"
 #include "sha2.h"
 #include "json.hpp"
+#include "defs.hpp"
+#include "parser.hpp"
 
 using namespace std;
 
@@ -44,6 +46,8 @@ public:
     User* get_user_by_id(int id);
     User* get_user_by_username(string username);
     User* get_user_by_fd(int fd);
+    
+    Room* get_room_by_id(int id);
 
     int create_new_user_id(void);
     bool username_exists(string username);
@@ -60,6 +64,10 @@ public:
     nlohmann::json handle_get_all_users(nlohmann::json request, int user_fd);
     nlohmann::json handle_get_rooms_info(nlohmann::json request, int user_fd);
     nlohmann::json handle_edit_info(nlohmann::json request, int user_fd);
+    nlohmann::json handle_booking(nlohmann::json request, int user_fd);
+
+    // bool check_room_availability(Room* room, Date check_in_date, Date check_out_date , int &num_of_beds);
+
 
 };
 

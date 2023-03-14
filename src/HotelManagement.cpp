@@ -97,6 +97,14 @@ User* HotelManagement::get_user_by_fd(int fd){
     return NULL;
 }
 
+Room* HotelManagement::get_room_by_id(int id){
+    for (int i = 0 ; i < rooms.size() ; i++){
+        if (rooms[i]->get_id() == id)
+            return rooms[i];
+    }
+    return NULL;
+}
+
 int HotelManagement::create_new_user_id(void){
     int max_id = 0;
     for (auto user:users){
@@ -128,6 +136,32 @@ bool HotelManagement::authorization_confirmation(int file_descriptor){
     }
     return false;
 }
+
+Date convert_string_to_date(string &date , Parser &parser){
+    vector<string> date_parts = parser.split_string(date , '-');
+    int day = stoi(date_parts[0]);
+    int month = stoi(date_parts[1]);
+    int year = stoi(date_parts[2]);
+    return Date(year , month , day);
+}
+
+bool check_room_availability(Room* room, Date check_in_date, Date check_out_date , int &num_of_beds){
+    int day_checkIn = check_in_date.get_days_since_epoch();
+    int day_checkOut = check_out_date.get_days_since_epoch();
+    for (int day = day_checkIn ; day <= day_checkOut ; day++){
+        int capacity = room->get_max_capacity();
+        for (auto reservation:room->get_reservations()){
+            if(reservation->get_check_in_date().get_days_since_epoch() <= day && reservation->get_check_out_date().get_days_since_epoch() >= day)
+                capacity -= num_of_beds;
+            if(capacity < 0)
+                return false;
+        }
+        if(capacity < 0)
+            return false;
+    }
+    return true;
+}
+
 
 nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user_fd){
     // TODO
@@ -166,7 +200,10 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
     else if (command == "edit_info") {
         return handle_edit_info(request, user_fd);
     }
-
+    
+    else if (command == "book_room"){
+        return handle_booking(request, user_fd);
+    }
     // TODO: Add other commands
 
     else {
@@ -397,3 +434,43 @@ nlohmann::json HotelManagement::handle_edit_info(nlohmann::json request, int use
 
 
 
+nlohmann::json HotelManagement::handle_booking(nlohmann::json request, int user_fd){
+    nlohmann::json response;
+    Room* room = get_room_by_id(request["room_num"]);
+
+    if (room != NULL){
+        Parser parser(CONFIGS_PATH);
+        string _check_in_date = request["check_in_date"];
+        string _check_out_date = request["check_out_date"];
+        Date check_in_date = convert_string_to_date(_check_in_date , parser);
+        Date check_out_date = convert_string_to_date(_check_out_date , parser);
+        int num_of_beds = request["num_of_beds"];
+
+        if (check_room_availability(room , check_in_date , check_out_date , num_of_beds) == false){
+            response["status"] = 109;
+            response["message"] = "The room capacity is full.";
+            return response;
+        }
+        
+        User* user = get_user_by_fd(user_fd);
+        if(user->get_balance() >= room->get_price()){
+            user->set_balance(user->get_balance() - room->get_price());
+            Reservation* reservation = new Reservation(user->get_id() , room->get_id() , num_of_beds , check_in_date , check_out_date);
+            reservations.push_back(reservation);
+            room->add_reservation(reservation);
+            response["status"] = 100;
+            response["message"] = "The room was booked successfully.";
+            return response;
+        }
+        else{
+            response["status"] = 108;
+            response["message"] = "108: Your account balance is not enogh.";
+            return response;
+        }
+    }
+
+    response["status"] = 101;
+    response["message"] = "The desired room was not found.";
+    return response;
+    
+}
