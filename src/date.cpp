@@ -13,6 +13,7 @@ Date::Date(int _year, int _month, int _day) {
                 year = _year;
                 month = _month;
                 day = _day;
+                date = date::year_month_day(date::year(_year) / date::month(_month) / date::day(_day));
                 return;
             }
         }
@@ -56,3 +57,8 @@ int Date::get_month(){return month;}
 
 int Date::get_day(){return day;}
 
+date::year_month_day Date::get_date(){return date;}
+
+int Date::get_days_since_epoch(){
+    return date::sys_days(this->date).time_since_epoch() / date::days{1};
+}
