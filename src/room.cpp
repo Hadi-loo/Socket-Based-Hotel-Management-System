@@ -50,3 +50,6 @@ string Room::get_info(){
     return info;
 }
 
+void Room::add_reservation(Reservation* reservation){
+    reservations.push_back(reservation);
+}

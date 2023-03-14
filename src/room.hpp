@@ -23,6 +23,10 @@ public:
 
     void show_info();
     string get_info();
+    int get_id(){return id;}
+    int get_max_capacity(){return max_capacity;}
+    int get_price(){return price;}
+    void add_reservation(Reservation* reservation);
 };
 
 #endif

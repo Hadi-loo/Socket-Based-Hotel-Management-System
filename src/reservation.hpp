@@ -20,7 +20,8 @@ public:
 
     void show_info();
     string get_info();
-
+    Date get_check_in_date(){return check_in_date;}
+    Date get_check_out_date(){return check_out_date;}
 };
 
 
