@@ -47,7 +47,7 @@ int acceptClient(int server_fd) {
 
 int main(int argc, char const *argv[]) {
     int server_fd, new_socket, max_sd;
-
+    
     Parser server_parser(CONFIGS_PATH);
     Logger server_logger(LOGS_PATH);
     HotelManagement hotel_managment;
