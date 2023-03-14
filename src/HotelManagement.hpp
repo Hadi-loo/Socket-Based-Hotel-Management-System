@@ -68,6 +68,7 @@ public:
 
     // bool check_room_availability(Room* room, Date check_in_date, Date check_out_date , int &num_of_beds);
 
+    nlohmann::json handle_add_room(nlohmann::json request, int user_fd);
 
 };
 

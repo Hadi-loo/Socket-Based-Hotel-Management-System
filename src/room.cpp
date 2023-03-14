@@ -12,6 +12,10 @@ Room::Room(int _id, int _max_capacity, int _available_capacity, int _price, bool
     reservations = _reservations;
 }
 
+int Room::get_id(){
+    return id;
+}
+
 vector<Reservation*> Room::get_reservations(){
     return reservations;
 }

@@ -32,4 +32,6 @@ bool handle_show_rooms_info(bool &logged_in, nlohmann::json &request, nlohmann::
 bool handle_edit_info(bool &logged_in, bool &is_admin, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
 bool handle_book_room(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input , Parser &client_parser);
 
+bool handle_edit_rooms(bool &logged_in, bool &is_admin, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
+
 #endif

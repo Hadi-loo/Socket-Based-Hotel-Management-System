@@ -168,7 +168,7 @@ void main_menu(int server_fd, bool &logged_in, bool &is_admin, Parser &client_pa
         }
 
         else if (input[0] == "9") {
-
+            bool should_continue = handle_edit_rooms(logged_in, is_admin, request, response, server_fd, buff, input);
         }
 
         else {
@@ -575,8 +575,6 @@ bool handle_edit_info(bool &logged_in, bool &is_admin, nlohmann::json &request, 
         return true;
     } 
 
-    cout << ":::::" << new_password << ":::" << new_phone_number << ":::" << new_address << ":::::" << endl;
-
     request["command"] = "edit_info";
     if (new_password != "")
         request["password"] = new_password;
@@ -609,6 +607,123 @@ bool handle_edit_info(bool &logged_in, bool &is_admin, nlohmann::json &request, 
         // CODE 310: successfully done
         // TODO: print success message
         cout << GREEN << response["message"] << RESET << endl;
+        return true;
+    }
+
+    return true;
+
+}
+
+bool handle_edit_rooms(bool &logged_in, bool &is_admin, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input) {
+    // check if user is logged in
+    if (!logged_in) {
+        // TODO: print error message
+        pretty_write("You are not logged in\n", "red");
+        return true;
+    }
+
+    string line;
+    cout << "What do you want to do?" << endl;
+    cout << CYAN << ">> " << RESET;
+    fflush(stdin);
+    getline(cin, line);
+
+    Parser temp_parser(CONFIGS_PATH);
+    input = temp_parser.split_string(line, ' ');
+
+    if (input.size() < 2) {
+        // CODE 503: Bad sequence of commands
+        // TODO: print error message
+        pretty_write("Invalid arguments\n", "red");
+        return true;
+    }
+
+    if (input[0] == "add") {
+        if (input.size() != 4) {
+            // CODE 503: Bad sequence of commands
+            // TODO: print error message
+            pretty_write("Invalid arguments\n", "red");
+            return true;
+        }
+
+        string room_id = input[1];
+        string max_capacity = input[2];
+        string price = input[3];
+
+        request["command"] = "add_room";
+        request["room_id"] = room_id;
+        request["max_capacity"] = max_capacity;
+        request["price"] = price;
+
+        send(server_fd, request.dump().c_str(), request.dump().size(), 0);
+        memset(buff, 0, MAX_BUFFER_SIZE);
+        read(server_fd, buff, MAX_BUFFER_SIZE);
+        response = nlohmann::json::parse(buff);
+
+        // check if add_room was successful or not
+        if (response["status"] == 404) {
+            // CODE 404: user not found
+            // TODO: print error message
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+
+        else if (response["status"] == 403) {
+            // CODE 403: user is not admin
+            // TODO: print error message
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+
+        else if (response["status"] == 503) {
+            // CODE 503: Bad sequence of commands
+            // TODO: print error message
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+
+        else if (response["status"] == 111) {
+            // CODE 111: Room already exists
+            // TODO: print error message
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+
+        else if (response["status"] == 104) {
+            // CODE 104: Room added successfully
+            // TODO: print success message
+            cout << GREEN << response["message"] << RESET << endl;
+            return true;
+        }
+
+        return true;
+
+    }
+
+    else if (input[0] == "modify" || input[0] == "change" || input[0] == "edit") {
+        if (input.size() != 4) {
+            // CODE 503: Bad sequence of commands
+            // TODO: print error message
+            pretty_write("Invalid arguments\n", "red");
+            return true;
+        }
+
+    }
+
+    else if (input[0] == "delete" || input[0] == "remove") {
+        if (input.size() != 2) {
+            // CODE 503: Bad sequence of commands
+            // TODO: print error message
+            pretty_write("Invalid arguments\n", "red");
+            return true;
+        }
+
+    }
+
+    else {
+        // CODE 503: Bad sequence of commands
+        // TODO: print error message
+        pretty_write("Invalid arguments\n", "red");
         return true;
     }
 
