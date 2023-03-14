@@ -163,6 +163,10 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
         return handle_get_rooms_info(request, user_fd);
     }
 
+    else if (command == "edit_info") {
+        return handle_edit_info(request, user_fd);
+    }
+
     // TODO: Add other commands
 
     else {
@@ -250,6 +254,7 @@ nlohmann::json HotelManagement::handle_signin(nlohmann::json request, int user_f
             // CODE 230: user signed in successfully
             response["status"] = 230;
             response["message"] = "user signed in successfully";
+            response["is_admin"] = user->is__admin();
             return response;
         } else {
             // CODE 430: password is incorrect
@@ -345,5 +350,50 @@ nlohmann::json HotelManagement::handle_get_rooms_info(nlohmann::json request, in
         return response;
     }
 }
+
+nlohmann::json HotelManagement::handle_edit_info(nlohmann::json request, int user_fd) {
+    nlohmann::json response;
+    User* user = get_user_by_fd(user_fd);
+
+    if (user != NULL) {
+        bool password_exists = request.find("password") != request.end();
+        bool phone_exists = request.find("phone_number") != request.end();
+        bool address_exists = request.find("address") != request.end();
+
+        if (phone_exists) {
+            if (!is_number(request["phone_number"])) {
+                // send error message to client
+                // CODE 503: Bad sequence of commands
+                response["status"] = 503;
+                response["message"] = "phone number has to be a number";
+                return response;
+            }
+        }
+
+        if (password_exists) {
+            user->set_password(request["password"]);
+        }
+        if (phone_exists) {
+            user->set_phone(request["phone_number"]);
+        }
+        if (address_exists) {
+            user->set_address(request["address"]);
+        }
+        
+        // CODE 312: Information was changed successfully
+        // send success message to client
+        response["status"] = 312;
+        response["message"] = "Information was changed successfully";
+        return response;
+
+    }
+
+    // CODE 404: user not found
+    response["status"] = 404;
+    response["message"] = "user not found";
+    return response;
+}
+
+
 
 

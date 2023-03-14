@@ -19,16 +19,16 @@
 using namespace std;
 
 int connectServer(string host_name ,int port);
-void authentication_menu(int server_fd, bool &logged_in, Parser &client_parser);
-void main_menu(int server_fd, bool &logged_in, Parser &client_parser);
+void authentication_menu(int server_fd, bool &logged_in, bool &is_admin, Parser &client_parser);
+void main_menu(int server_fd, bool &logged_in, bool &is_admin, Parser &client_parser);
 void show_main_menu();
 void pretty_write(string message, string color);
 bool handle_signup(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
-bool handle_signin(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input, Parser &client_parser);
+bool handle_signin(bool &logged_in, bool &is_admin, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input, Parser &client_parser);
 bool handle_signout(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
 bool handle_show_user_info(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
 bool handle_show_all_users(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
 bool handle_show_rooms_info(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
-
+bool handle_edit_info(bool &logged_in, bool &is_admin, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
 
 #endif

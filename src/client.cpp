@@ -8,8 +8,9 @@ int main(int argc, char const *argv[]) {
     client_parser.parse_config(CONFIG_FILE_NAME, server_ip_address, server_port);
     int server_fd = connectServer(server_ip_address, server_port);
     bool logged_in = false;
+    bool is_admin = false;
 
-    authentication_menu(server_fd, logged_in, client_parser);
+    authentication_menu(server_fd, logged_in, is_admin, client_parser);
 
     return 0;
 }
@@ -33,7 +34,7 @@ int connectServer(string host_name ,int port) {
     return fd;
 }
 
-void authentication_menu(int server_fd, bool &logged_in, Parser &client_parser) {
+void authentication_menu(int server_fd, bool &logged_in, bool &is_admin, Parser &client_parser) {
     
     char buff[MAX_BUFFER_SIZE] = {0};
     vector<string> input;
@@ -58,7 +59,7 @@ void authentication_menu(int server_fd, bool &logged_in, Parser &client_parser) 
         }
 
         else if (input[0] == "signin" || input[0] == "login") {
-            bool should_continue = handle_signin(logged_in, request, response, server_fd, buff, input, client_parser);
+            bool should_continue = handle_signin(logged_in, is_admin, request, response, server_fd, buff, input, client_parser);
             if (should_continue) {
                 continue;
             }
@@ -77,7 +78,7 @@ void authentication_menu(int server_fd, bool &logged_in, Parser &client_parser) 
 
 }
 
-void main_menu(int server_fd, bool &logged_in, Parser &client_parser) {
+void main_menu(int server_fd, bool &logged_in, bool &is_admin, Parser &client_parser) {
     
     char buff[MAX_BUFFER_SIZE] = {0};
     vector<string> input;
@@ -148,8 +149,13 @@ void main_menu(int server_fd, bool &logged_in, Parser &client_parser) {
 
         }
 
-        else if (input[0] == "7") {
-
+        else if (input[0] == "7" || input[0] == "edit" || input[0] == "edit_info") {
+            bool should_continue = handle_edit_info(logged_in, is_admin, request, response, server_fd, buff, input);
+            if (should_continue) {
+                continue;
+            } else {
+                break;
+            }
         }
 
         else if (input[0] == "8") {
@@ -301,7 +307,7 @@ bool handle_signup(bool &logged_in, nlohmann::json &request, nlohmann::json &res
     return true;
 }
 
-bool handle_signin(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input, Parser &client_parser) {
+bool handle_signin(bool &logged_in, bool &is_admin, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input, Parser &client_parser) {
     // check if user is already logged in
     if (logged_in) {
         // TODO: print error message
@@ -345,10 +351,11 @@ bool handle_signin(bool &logged_in, nlohmann::json &request, nlohmann::json &res
         // CODE 230: login successful
         // TODO: print success message
         logged_in = true;
+        is_admin = response["is_admin"];
         cout << GREEN;
         cout << "Successfully signed in!\n";
         cout << RESET;
-        main_menu(server_fd, logged_in, client_parser);
+        main_menu(server_fd, logged_in, is_admin, client_parser);
     }
 
     return true;
@@ -534,7 +541,74 @@ bool handle_show_rooms_info(bool &logged_in, nlohmann::json &request, nlohmann::
 
 }
 
-    
+bool handle_edit_info(bool &logged_in, bool &is_admin, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input) {
+    // check if user is logged in
+    if (!logged_in) {
+        // TODO: print error message
+        pretty_write("You are not logged in\n", "red");
+        return true;
+    }
 
+    cout << "Enter new information. leave blank to keep old information:" << endl;
+    cout << CYAN << ">> New Password: " << RESET;
+    string new_password = "", new_phone_number = "", new_address = "";
+    fflush(stdin);
+    getline(cin, new_password);
+    if (!is_admin) {
+        cout << CYAN << ">> New Phone Number: " << RESET;
+        // cin.ignore(MAX_BUFFER_SIZE, '\n');
+        fflush(stdin);
+        getline(cin, new_phone_number);
+        cout << CYAN << ">> New Address: " << RESET;
+        fflush(stdin);
+        // cin.ignore(MAX_BUFFER_SIZE, '\n');
+        getline(cin, new_address);
+    }
+    
+    if (new_password == "" && new_phone_number == "" && new_address == "") {
+        pretty_write("No information was changed\n", "red");
+        return true;
+    } 
+
+    cout << ":::::" << new_password << ":::" << new_phone_number << ":::" << new_address << ":::::" << endl;
+
+    request["command"] = "edit_info";
+    if (new_password != "")
+        request["password"] = new_password;
+    if (new_phone_number != "")
+        request["phone_number"] = new_phone_number;
+    if (new_address != "")
+        request["address"] = new_address;
+
+    send(server_fd, request.dump().c_str(), request.dump().size(), 0);
+    memset(buff, 0, MAX_BUFFER_SIZE);
+    read(server_fd, buff, MAX_BUFFER_SIZE);
+    response = nlohmann::json::parse(buff);
+
+    // check if edit_info was successful or not
+    if (response["status"] == 404) {
+        // CODE 404: user not found
+        // TODO: print error message
+        cout << RED << response["message"] << RESET << endl;
+        return true;
+    }
+
+    else if (response["status"] == 503) {
+        // CODE 503: Bad sequence of commands
+        // TODO: print error message
+        cout << RED << response["message"] << RESET << endl;
+        return true;
+    }
+
+    else if (response["status"] == 312) {
+        // CODE 312: Information was changed successfully
+        // TODO: print success message
+        cout << GREEN << response["message"] << RESET << endl;
+        return true;
+    }
+
+    return true;
+
+}
 
 
