@@ -153,22 +153,6 @@ Date convert_string_to_date(string &date , Parser &parser){
     return Date(year , month , day);
 }
 
-bool check_room_availability(Room* room, Date check_in_date, Date check_out_date , int &num_of_beds){
-    int day_checkIn = check_in_date.get_days_since_epoch();
-    int day_checkOut = check_out_date.get_days_since_epoch();
-    for (int day = day_checkIn ; day <= day_checkOut ; day++){
-        int capacity = room->get_max_capacity() - num_of_beds;
-        for (auto reservation:room->get_reservations()){
-            if(reservation->get_check_in_date().get_days_since_epoch() <= day && reservation->get_check_out_date().get_days_since_epoch() >= day)
-                capacity -= reservation->get_num_of_beds();
-            if(capacity < 0)
-                return false;
-        }
-        if(capacity < 0)
-            return false;
-    }
-    return true;
-}
 
 
 nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user_fd){
@@ -684,7 +668,7 @@ nlohmann::json HotelManagement::handle_booking(nlohmann::json request, int user_
         Date check_out_date = convert_string_to_date(_check_out_date , parser);
         int num_of_beds = request["num_of_beds"];
 
-        if (check_room_availability(room , check_in_date , check_out_date , num_of_beds) == false){
+        if (!room->check_room_availability(check_in_date , check_out_date , num_of_beds)) {
             response["status"] = 109;
             response["message"] = "The room capacity is full.";
             return response;
