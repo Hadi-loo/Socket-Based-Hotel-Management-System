@@ -340,7 +340,7 @@ nlohmann::json HotelManagement::handle_get_user_info(nlohmann::json request, int
         response["balance"] = user->get_balance();
         response["phone_number"] = user->get_phone();
         response["address"] = user->get_address();
-        response["summary"] = user->get_info();
+        response["summary"] = user->get_full_info();
         return response;
     }
 
@@ -360,8 +360,18 @@ nlohmann::json HotelManagement::handle_get_all_users(nlohmann::json request, int
         return response;
     }
 
+    User* user = get_user_by_fd(user_fd);
+
+    if (!user->is__admin()) {
+        // CODE 403: Access denied
+        response["status"] = 403;
+        response["message"] = "Access denied";
+        return response;
+    }
+
     else {
-        response["status"] = 100;
+        // CODE 110: all users info retrieved successfully
+        response["status"] = 110;
         response["message"] = "all users info retrieved successfully";
         for (auto user:users){
             response["summary"].push_back(user->get_info());

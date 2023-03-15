@@ -480,8 +480,14 @@ bool handle_show_all_users(bool &logged_in, nlohmann::json &request, nlohmann::j
         return true;
     }
 
-    else if (response["status"] == 100) {
-        // CODE 100: get_all_users was successful
+    if (response["status"] == 403) {
+        // CODE 403: user is not admin
+        cout << RED << response["message"] << RESET << "\n";
+        return true;
+    }
+
+    else if (response["status"] == 110) {
+        // CODE 110: get_all_users was successful
         // TODO: print success message
         pretty_write(response["message"], "green");
         pretty_write("\n", "green");

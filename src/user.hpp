@@ -39,6 +39,7 @@ public:
 
     void show_info();
     string get_info();
+    string get_full_info();
 
     void sign_in(int _user_fd);
     void sign_out();

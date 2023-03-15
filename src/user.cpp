@@ -111,6 +111,23 @@ string User::get_info() {
     return info;
 }
 
+string User::get_full_info() {
+    string info = "";
+    info += "---------------" + username + "---------------\n";
+    info += "ID: " + to_string(id) + "\n";
+    info += "Username: " + username + "\n";
+    info += "Password: " + password + "\n";
+    if (!is_admin) {        
+        info += "Balance: " + to_string(balance) + "\n";
+        info += "Phone Number: " + phone + "\n";
+        info += "Address: " + address + "\n";
+        info += "You are one of our beloved customers :)\n";
+    } else {
+        info += "You are one of our admins\n";
+    } 
+    info += "---------------------------------------\n";
+    return info;
+}
 
 void User::sign_in(int _user_fd) {
     signed_in = true;
