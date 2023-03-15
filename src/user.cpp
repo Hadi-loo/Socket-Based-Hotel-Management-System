@@ -99,7 +99,6 @@ string User::get_info() {
     info += "---------------" + username + "---------------\n";
     info += "ID: " + to_string(id) + "\n";
     info += "Username: " + username + "\n";
-    info += "Password: " + password + "\n";
     if (!is_admin) {        
         info += "Balance: " + to_string(balance) + "\n";
         info += "Phone Number: " + phone + "\n";
