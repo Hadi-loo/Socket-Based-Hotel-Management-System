@@ -51,14 +51,30 @@ void Date::set_day(int _day) {
     }
 }
 
-int Date::get_year(){return year;}
+int Date::get_year() {
+    return year;
+}
 
-int Date::get_month(){return month;}
+int Date::get_month() {
+    return month;
+}
 
-int Date::get_day(){return day;}
+int Date::get_day() { 
+    return day;
+}
 
-date::year_month_day Date::get_date(){return date;}
+date::year_month_day Date::get_date() {
+    return date;
+}
 
 int Date::get_days_since_epoch(){
     return date::sys_days(this->date).time_since_epoch() / date::days{1};
+}
+
+string Date::dmy_string() {
+    return format("%d-%m-%Y", date);
+}
+
+string Date::ymd_string() {
+    return format("%Y-%m-%d", date);
 }

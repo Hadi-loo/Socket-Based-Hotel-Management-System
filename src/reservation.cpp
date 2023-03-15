@@ -15,6 +15,27 @@ Reservation::~Reservation() {
     
 }
 
+int Reservation::get_costumer_id(){
+    return costumer_id;
+}
+
+int Reservation::get_room_id(){
+    return room_id;
+}
+
+int Reservation::get_num_of_beds(){
+    return number_of_beds;
+}
+
+Date Reservation::get_check_in_date(){
+    return check_in_date;
+}
+
+Date Reservation::get_check_out_date(){
+    return check_out_date;
+}
+
+
 void Reservation::show_info(){
     cout << "Costumer ID: " << costumer_id << endl;
     cout << "Room ID: " << room_id << endl;

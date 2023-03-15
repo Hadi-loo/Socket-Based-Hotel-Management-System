@@ -10,6 +10,7 @@ Parser::~Parser() {
     // TODO
 }
 
+
 void Parser::parse_config(string config_file_name, string &hostName, int &port) {
     std:ifstream config_file;
     config_file.open(configs_path + "/" + config_file_name, std::ifstream::in);
@@ -20,7 +21,6 @@ void Parser::parse_config(string config_file_name, string &hostName, int &port) 
     config_file.close();
     return;
 }
-
 
 vector<User*> Parser::parse_users(string users_file_name) {
     std::ifstream users_file;
@@ -40,7 +40,6 @@ vector<User*> Parser::parse_users(string users_file_name) {
     users_file.close();
     return users;
 }
-
 
 vector<Room*> Parser::parse_rooms(string rooms_file_name){
     std::ifstream rooms_file;
@@ -89,4 +88,47 @@ vector<string> Parser::split_string(const string& input, char delimiter){
             words.push_back(substring);
     }
     return words;
+}
+
+
+void Parser::rewrite_users_file(string users_file_name, vector<User*> users) {
+    std::ofstream users_file;
+    users_file.open(configs_path + "/" + users_file_name, std::ofstream::out);
+    nlohmann::json j;
+    j["users"] = nlohmann::json::array();
+    j["users"].push_back({});
+
+    for (auto user : users) {
+        if (user->is__admin()) {
+            j["users"].push_back({{"id", user->get_id()}, {"user", user->get_username()}, {"password", user->get_password()}, {"admin", "true"}});
+        } else {
+            j["users"].push_back({{"id", user->get_id()}, {"user", user->get_username()}, {"password", user->get_password()}, {"admin", "false"}, {"purse", user->get_balance()}, {"phoneNumber", user->get_phone()}, {"address", user->get_address()}});
+        }
+    }
+
+    users_file << j.dump(4);
+    users_file.close();
+    return;
+}
+
+void Parser::rewrite_rooms_file(string rooms_file_name, vector<Room*> rooms) {
+    std::ofstream rooms_file;
+    rooms_file.open(configs_path + "/" + rooms_file_name, std::ofstream::out);
+    nlohmann::json j;
+    j["rooms"] = nlohmann::json::array();
+    j["rooms"].push_back({});
+
+    for (auto room : rooms) {
+        nlohmann::json users_array = nlohmann::json::array();
+        users_array.push_back({});
+        j["rooms"].push_back({{"number", room->get_id()}, {"maxCapacity", room->get_max_capacity()}, {"capacity", room->get_max_capacity()}, {"price", room->get_price()}, {"status", room->is__available()}, {"users", users_array}});
+        for (auto reservation : room->get_reservations()) {
+            users_array.push_back({{"id", reservation->get_costumer_id()}, {"reserveDate", reservation->get_check_in_date().dmy_string()}, {"checkoutDate", reservation->get_check_out_date().dmy_string()}, {"numOfBeds", reservation->get_num_of_beds()}});
+        }
+    }
+
+    rooms_file << j.dump(4);
+    rooms_file.close();
+    return;
+
 }

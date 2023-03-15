@@ -20,6 +20,8 @@ public:
     vector<User*> parse_users(string users_file);
     vector<Room*> parse_rooms(string rooms_file);
     vector<string> split_string(const string& input, char delimiter);
+    void rewrite_users_file(string users_file_name, vector<User*> users);
+    void rewrite_rooms_file(string rooms_file_name, vector<Room*> rooms);
     
 };
 

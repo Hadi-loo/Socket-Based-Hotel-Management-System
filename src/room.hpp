@@ -22,6 +22,7 @@ public:
     int get_id();
     int get_max_capacity();
     int get_price();
+    bool is__available();
     vector<Reservation*> get_reservations();
 
     void set_max_capacity(int max_capacity);

@@ -24,6 +24,8 @@ public:
     int get_day();
     int get_days_since_epoch();
     date::year_month_day get_date();
+    string dmy_string();
+    string ymd_string();
 
 };
 

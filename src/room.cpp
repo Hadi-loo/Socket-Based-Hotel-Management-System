@@ -24,6 +24,10 @@ int Room::get_price() {
     return price;
 }
 
+bool Room::is__available() {
+    return is_available;
+}
+
 vector<Reservation*> Room::get_reservations(){
     return reservations;
 }
