@@ -99,11 +99,22 @@ int main(int argc, char const *argv[]) {
                     bytes_received = recv(i , buffer, MAX_BUFFER_SIZE, 0);
                     if (bytes_received == 0) {                              // client closed connection
                         // TODO: handle client disconnection
+                        hotel_managment.user_disconnected(i);
+                        User* user = hotel_managment.get_user_by_fd(i);
+                        if (user != NULL) {
+                            log_message = "User " + user->get_username() + " disconnected\n";
+                            server_logger.log(user->get_username() + ".log", log_message);
+                        } else {
+                            log_message = "Client with fd = " + to_string(i) + " disconnected\n";
+                        }
+                        server_logger.log(SERVER_LOG_FILE_NAME, log_message);
+                        cout << log_message;
                         close(i);
                         FD_CLR(i, &master_set);
                         continue;
                     }
 
+                    // this section is for debugging and should be removed
                     log_message = "Received message from client fd = " + to_string(i) + ": " + buffer + "\n";
                     server_logger.log(SERVER_LOG_FILE_NAME, log_message);
                     cout << log_message;
@@ -111,7 +122,24 @@ int main(int argc, char const *argv[]) {
                     request = nlohmann::json::parse(buffer);
                     response = hotel_managment.handle_request(request, i);
 
+                    User* user = hotel_managment.get_user_by_fd(i);
+                    if (user != NULL) {
+                        log_message = "Sending response to user " + user->get_username() + ": ";
+                    } else {
+                        log_message = "Sending response to client fd = " + to_string(i) + ": ";
+                    }
+
+                    if (response.find("message") != response.end()) {
+                        log_message += string(response["message"]) + "\n";
+                    } else {
+                        log_message = response.dump() + "\n";
+                    }
+                    server_logger.log(SERVER_LOG_FILE_NAME, log_message);
+                    if (user != NULL) {
+                        server_logger.log(user->get_username() + ".log", log_message);
+                    }
                     cout << "Sending response to client fd = " << i << ": " << response.dump() << endl;
+
                     send(i, response.dump().c_str(), response.dump().length(), 0);
                     memset(buffer, 0, MAX_BUFFER_SIZE);
                 }

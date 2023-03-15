@@ -53,8 +53,10 @@ public:
     bool username_exists(string username);
     bool is_number(string str);
     
-    nlohmann::json handle_request(nlohmann::json request, int user_fd);
     bool authorization_confirmation(int file_descriptor);
+    void user_disconnected(int file_descriptor);
+
+    nlohmann::json handle_request(nlohmann::json request, int user_fd);
 
     nlohmann::json handle_signup(nlohmann::json request);
     nlohmann::json handle_signup_info(nlohmann::json request);

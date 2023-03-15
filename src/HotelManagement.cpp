@@ -137,6 +137,14 @@ bool HotelManagement::authorization_confirmation(int file_descriptor){
     return false;
 }
 
+void HotelManagement::user_disconnected(int file_descriptor){
+    for (auto user:users){
+        if(user->get_user_fd() == file_descriptor){
+            user->sign_out();
+        }
+    }
+}
+
 Date convert_string_to_date(string &date , Parser &parser){
     vector<string> date_parts = parser.split_string(date , '-');
     int day = stoi(date_parts[0]);
@@ -286,8 +294,6 @@ nlohmann::json HotelManagement::handle_signup_info(nlohmann::json request) {
 
     // send success message to client
     // CODE 231: user info submitted successfully
-
-    user->show_info();
 
     response["status"] = 231;
     response["message"] = "user's information submitted successfully";
