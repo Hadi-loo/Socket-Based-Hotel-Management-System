@@ -16,8 +16,26 @@ int Room::get_id(){
     return id;
 }
 
+int Room::get_max_capacity() {
+    return max_capacity;
+}
+
+int Room::get_price() {
+    return price;
+}
+
 vector<Reservation*> Room::get_reservations(){
     return reservations;
+}
+
+void Room::set_max_capacity(int _max_capacity) {
+    available_capacity += _max_capacity - max_capacity;
+    is_available = (available_capacity > 0);
+    max_capacity = _max_capacity;
+}
+
+void Room::set_price(int _price) {
+    price = _price;
 }
 
 void Room::show_info(){
@@ -57,3 +75,59 @@ string Room::get_info(){
 void Room::add_reservation(Reservation* reservation){
     reservations.push_back(reservation);
 }
+
+bool Room::check_room_availability(Date check_in_date, Date check_out_date , int &num_of_beds) {
+
+    int day_checkIn = check_in_date.get_days_since_epoch();
+    int day_checkOut = check_out_date.get_days_since_epoch();
+
+    for (int day = day_checkIn ; day <= day_checkOut ; day++){
+        int capacity = max_capacity - num_of_beds;
+
+        for (auto reservation : reservations){
+            if(reservation->get_check_in_date().get_days_since_epoch() <= day && reservation->get_check_out_date().get_days_since_epoch() >= day)
+                capacity -= reservation->get_num_of_beds();
+            if(capacity < 0)
+                return false;
+        }
+
+        if(capacity < 0)
+            return false;
+    }
+    return true;
+}
+
+void Room::first_last_reservation_date(int &first_date, int &last_date) {
+    int first = -1;
+    int last = -1;
+    for (auto reservation : reservations) {
+        if (first == -1 || reservation->get_check_in_date().get_days_since_epoch() < first) {
+            first = reservation->get_check_in_date().get_days_since_epoch();
+        }
+        if (last == -1 || reservation->get_check_out_date().get_days_since_epoch() > last) {
+            last = reservation->get_check_out_date().get_days_since_epoch();
+        }
+    }
+    first_date = first;
+    last_date = last;
+}
+
+int Room::maximum_people_in_room() {
+    int first, last;
+    first_last_reservation_date(first, last);
+    int max = 0;
+    for (int day = first; day <= last; day++) {
+        int people = 0;
+        for (auto reservation : reservations) {
+            if (reservation->get_check_in_date().get_days_since_epoch() <= day && reservation->get_check_out_date().get_days_since_epoch() >= day) {
+                people += reservation->get_num_of_beds();
+            }
+        }
+        if (people > max) {
+            max = people;
+        }
+    }
+    return max;
+}
+
+

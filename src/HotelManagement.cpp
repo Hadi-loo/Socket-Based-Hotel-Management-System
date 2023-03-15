@@ -209,6 +209,10 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
         return handle_add_room(request, user_fd);
     }
 
+    else if (command == "modify_room") {
+        return handle_modify_room(request, user_fd);
+    }
+
     // TODO: Add other commands
 
     else {
@@ -507,6 +511,91 @@ nlohmann::json HotelManagement::handle_add_room(nlohmann::json request, int user
     return response;
 }
 
+nlohmann::json HotelManagement::handle_modify_room(nlohmann::json request, int user_fd) {
+    nlohmann::json response;
+    User* user = get_user_by_fd(user_fd);
+
+    if (user != NULL) {
+        if (user->is__admin()) {
+            // check if room_number is a number
+            if (!is_number(request["room_id"])) {
+                // send error message to client
+                // CODE 503: error in input arguments
+                response["status"] = 503;
+                response["message"] = "room number has to be a number";
+                return response;
+            }
+
+            // check if room_number is a number
+            if (!is_number(request["price"])) {
+                // send error message to client
+                // CODE 503: error in input arguments
+                response["status"] = 503;
+                response["message"] = "room price has to be a number";
+                return response;
+            }
+
+            // check if room_number is a number
+            if (!is_number(request["max_capacity"])) {
+                // send error message to client
+                // CODE 503: error in input arguments
+                response["status"] = 503;
+                response["message"] = "room capacity has to be a number";
+                return response;
+            }
+
+            string _room_id = request["room_id"];
+            string _max_capacity = request["max_capacity"];
+            string _price = request["price"];
+            int room_id = stoi(_room_id);
+            int max_capacity = stoi(_max_capacity);
+            int price = stoi(_price);
+
+            Room* room = get_room_by_id(room_id);
+
+            // check if room_number exists
+            if (room == NULL) {
+                // send error message to client
+                // CODE 101: room doesn't exist
+                response["status"] = 101;
+                response["message"] = "room doesn't exist";
+                return response;
+            }
+
+            else {
+                int max_people = room->maximum_people_in_room();
+                if (max_capacity < max_people) {
+                    // send error message to client
+                    // CODE 412: New room capacity can't be less than the number of people in the room
+                    response["status"] = 412;
+                    response["message"] = "New room capacity can't be less than the number of people in the room";
+                    return response;
+                }
+
+                // CODE 105: Room modified successfully
+                // send success message to client
+                room->set_max_capacity(max_capacity);
+                room->set_price(price);
+                response["status"] = 105;
+                response["message"] = "Room modified successfully";
+                return response;
+            }
+        }
+        else {
+            // CODE 403: user is not admin
+            response["status"] = 403;
+            response["message"] = "user is not admin";
+            return response;
+        }
+    }
+
+    else {
+        // CODE 404: user not found
+        response["status"] = 404;
+        response["message"] = "user not found";
+        return response;
+    }
+}
 
 nlohmann::json HotelManagement::handle_booking(nlohmann::json request, int user_fd){
     nlohmann::json response;
