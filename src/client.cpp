@@ -800,5 +800,10 @@ bool handle_book_room(bool &logged_in, nlohmann::json &request, nlohmann::json &
         cout << RED << response["message"] << RESET << endl;
         return true;
     }
+    else if(response["status"] == 110){
+        //CODE 110: Successfully done
+        cout << GREEN << response["message"] << RESET << endl;
+        return true;
+    }
     return true;
 }

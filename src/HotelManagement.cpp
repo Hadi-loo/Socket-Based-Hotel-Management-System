@@ -149,10 +149,10 @@ bool check_room_availability(Room* room, Date check_in_date, Date check_out_date
     int day_checkIn = check_in_date.get_days_since_epoch();
     int day_checkOut = check_out_date.get_days_since_epoch();
     for (int day = day_checkIn ; day <= day_checkOut ; day++){
-        int capacity = room->get_max_capacity();
+        int capacity = room->get_max_capacity() - num_of_beds;
         for (auto reservation:room->get_reservations()){
             if(reservation->get_check_in_date().get_days_since_epoch() <= day && reservation->get_check_out_date().get_days_since_epoch() >= day)
-                capacity -= num_of_beds;
+                capacity -= reservation->get_num_of_beds();
             if(capacity < 0)
                 return false;
         }
@@ -532,8 +532,8 @@ nlohmann::json HotelManagement::handle_booking(nlohmann::json request, int user_
             Reservation* reservation = new Reservation(user->get_id() , room->get_id() , num_of_beds , check_in_date , check_out_date);
             reservations.push_back(reservation);
             room->add_reservation(reservation);
-            response["status"] = 100;
-            response["message"] = "The room was booked successfully.";
+            response["status"] = 110;
+            response["message"] = "110: Successfully done.";
             return response;
         }
         else{
