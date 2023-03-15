@@ -848,7 +848,7 @@ bool handle_book_room(bool &logged_in, nlohmann::json &request, nlohmann::json &
         return true;
     }
     
-    int room_num , num_of_beds;
+    string room_num , num_of_beds;
     string check_in_date , check_out_date;
     
     memset(buff, 0, MAX_BUFFER_SIZE);
@@ -861,8 +861,8 @@ bool handle_book_room(bool &logged_in, nlohmann::json &request, nlohmann::json &
         return true;
     }
     
-    room_num = stoi(input[1]);
-    num_of_beds = stoi(input[2]);
+    room_num = input[1];
+    num_of_beds = input[2];
     check_in_date = input[3];
     check_out_date = input[4];
 

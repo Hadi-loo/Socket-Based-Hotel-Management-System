@@ -668,7 +668,29 @@ nlohmann::json HotelManagement::handle_delete_room(nlohmann::json request, int u
 
 nlohmann::json HotelManagement::handle_booking(nlohmann::json request, int user_fd){
     nlohmann::json response;
-    Room* room = get_room_by_id(request["room_num"]);
+
+    if (!is_number(request["room_num"])) {
+        // send error message to client
+        // CODE 503: error in input arguments
+        response["status"] = 503;
+        response["message"] = "room number has to be a number";
+        return response;
+    }
+
+    if (!is_number(request["num_of_beds"])) {
+        // send error message to client
+        // CODE 503: error in input arguments
+        response["status"] = 503;
+        response["message"] = "number of beds has to be a number";
+        return response;
+    }
+
+    string _room_num = request["room_num"];
+    string _num_of_beds = request["num_of_beds"];
+    int room_num = stoi(_room_num);
+    int num_of_beds = stoi(_num_of_beds);
+
+    Room* room = get_room_by_id(room_num);
 
     if (room != NULL){
         Parser parser(CONFIGS_PATH);
@@ -676,7 +698,6 @@ nlohmann::json HotelManagement::handle_booking(nlohmann::json request, int user_
         string _check_out_date = request["check_out_date"];
         Date check_in_date = convert_string_to_date(_check_in_date , parser);
         Date check_out_date = convert_string_to_date(_check_out_date , parser);
-        int num_of_beds = request["num_of_beds"];
 
         if (!room->check_room_availability(check_in_date , check_out_date , num_of_beds)) {
             response["status"] = 109;
