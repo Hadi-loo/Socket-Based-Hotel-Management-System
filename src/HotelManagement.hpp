@@ -70,6 +70,7 @@ public:
 
     nlohmann::json handle_add_room(nlohmann::json request, int user_fd);
     nlohmann::json handle_modify_room(nlohmann::json request, int user_fd);
+    nlohmann::json handle_delete_room(nlohmann::json request, int user_fd);
 
 };
 

@@ -771,6 +771,55 @@ bool handle_edit_rooms(bool &logged_in, bool &is_admin, nlohmann::json &request,
             return true;
         }
 
+        string room_id = input[1];
+
+        request["command"] = "delete_room";
+        request["room_id"] = room_id;
+
+        send(server_fd, request.dump().c_str(), request.dump().size(), 0);
+        memset(buff, 0, MAX_BUFFER_SIZE);
+        read(server_fd, buff, MAX_BUFFER_SIZE);
+        response = nlohmann::json::parse(buff);
+
+        // check if delete_room was successful or not
+        if (response["status"] == 404) {
+            // CODE 404: user not found
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+
+        else if (response["status"] == 403) {
+            // CODE 403: user is not admin
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+
+        else if (response["status"] == 503) {
+            // CODE 503: Bad sequence of commands
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+
+        else if (response["status"] == 101) {
+            // CODE 101: Room does not exist
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+
+        else if (response["status"] == 412) {
+            // CODE 412: Room can't be deleted because it has people in it
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+
+        else if (response["status"] == 106) {
+            // CODE 106: Room deleted successfully
+            cout << GREEN << response["message"] << RESET << endl;
+            return true;
+        }
+
+        return true;
+
     }
 
     else {

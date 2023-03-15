@@ -213,6 +213,10 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
         return handle_modify_room(request, user_fd);
     }
 
+    else if (command == "delete_room") {
+        return handle_delete_room(request, user_fd);
+    }
+
     // TODO: Add other commands
 
     else {
@@ -579,6 +583,71 @@ nlohmann::json HotelManagement::handle_modify_room(nlohmann::json request, int u
                 response["status"] = 105;
                 response["message"] = "Room modified successfully";
                 return response;
+            }
+        }
+        else {
+            // CODE 403: user is not admin
+            response["status"] = 403;
+            response["message"] = "user is not admin";
+            return response;
+        }
+    }
+
+    else {
+        // CODE 404: user not found
+        response["status"] = 404;
+        response["message"] = "user not found";
+        return response;
+    }
+}
+
+nlohmann::json HotelManagement::handle_delete_room(nlohmann::json request, int user_fd) {
+    nlohmann::json response;
+    User* user = get_user_by_fd(user_fd);
+
+    if (user != NULL) {
+        if (user->is__admin()) {
+            // check if room_number is a number
+            if (!is_number(request["room_id"])) {
+                // send error message to client
+                // CODE 503: error in input arguments
+                response["status"] = 503;
+                response["message"] = "room number has to be a number";
+                return response;
+            }
+
+            string _room_id = request["room_id"];
+            int room_id = stoi(_room_id);
+
+            Room* room = get_room_by_id(room_id);
+
+            // check if room_number exists
+            if (room == NULL) {
+                // send error message to client
+                // CODE 101: room doesn't exist
+                response["status"] = 101;
+                response["message"] = "room doesn't exist";
+                return response;
+            }
+
+            else {
+                // check if there are people in the room or not
+                int max_people = room->maximum_people_in_room();
+                if (max_people > 0) {
+                    // send error message to client
+                    // CODE 412: Room can't be deleted because there are people in it
+                    response["status"] = 412;
+                    response["message"] = "Room can't be deleted because there are people in it";
+                    return response;
+                }
+                else {
+                    // CODE 106: Room deleted successfully
+                    // send success message to client
+                    rooms.erase(std::remove(rooms.begin(), rooms.end(), room), rooms.end());
+                    response["status"] = 106;
+                    response["message"] = "Room deleted successfully";
+                    return response;
+                }
             }
         }
         else {
