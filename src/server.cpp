@@ -29,7 +29,12 @@ int setupServer(int port , string ip_address) {
     address.sin_addr.s_addr = inet_addr(ip);
     address.sin_port = htons(port);
 
-    bind(server_fd, (struct sockaddr *)&address, sizeof(address));
+    int is_ok;
+    is_ok = bind(server_fd, (struct sockaddr *)&address, sizeof(address));
+    if (is_ok < 0) {
+        cout << RED << "Error: " << RESET << "Could not bind server to port " << port << endl;
+        exit(1);
+    }
     listen(server_fd, 4);
 
     return server_fd;
