@@ -82,11 +82,40 @@ Here is the list of available commands:
 2. View all users:
   This command is only available for admin users.   
   
-    ![Screenshot from 2023-03-16 20-14-00](https://user-images.githubusercontent.com/88896798/225705673-f3c18dde-55ba-4528-abc1-df91a08c4ff2.png)
+   ![Screenshot from 2023-03-16 20-14-00](https://user-images.githubusercontent.com/88896798/225705673-f3c18dde-55ba-4528-abc1-df91a08c4ff2.png)
 
 3. View rooms information:   
    
     ![Screenshot from 2023-03-16 20-16-52](https://user-images.githubusercontent.com/88896798/225706305-bf9e2a42-4519-464b-a8d6-c6c1986b552f.png)
+
+4. Booking:
+
+```text
+    book <RoomNum> <NumOfBeds> <CheckInDate> <CheckOutDate>
+```
+
+   ![Screenshot from 2023-03-16 20-21-22](https://user-images.githubusercontent.com/88896798/225707776-c6b41368-86b1-4295-a0be-237bc909578f.png)
+
+5. Canceling:
+
+```text
+    canceling <RoomNum> <Number of reservation(per person)>
+```
+   ![Screenshot from 2023-03-16 20-30-52](https://user-images.githubusercontent.com/88896798/225708521-a6d1efa3-d27a-4457-8496-d574f96d9bca.png)
+
+6. Pass Day:
+```text
+    passDay <value>
+```
+
+  ![Screenshot from 2023-03-16 20-32-57](https://user-images.githubusercontent.com/88896798/225708826-56389501-03a5-4d8a-a403-74331728597d.png)
+  
+7. Edit Information:
+```text
+    passDay <value>
+```
+
+  ![Screenshot from 2023-03-16 20-44-15](https://user-images.githubusercontent.com/88896798/225709344-1046d106-5ba3-4771-9910-79d6c3cff49c.png)
 
 
 
