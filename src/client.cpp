@@ -147,7 +147,12 @@ void main_menu(int server_fd, bool &logged_in, bool &is_admin, Parser &client_pa
         }
 
         else if (input[0] == "5") {
-
+            bool should_continue = handle_book_cancelation(logged_in, request, response, server_fd, buff, input , client_parser);
+            if (should_continue) {
+                continue;
+            } else {
+                break;
+            }
         }
 
         else if (input[0] == "6") {
@@ -950,18 +955,6 @@ bool handle_book_room(bool &logged_in, nlohmann::json &request, nlohmann::json &
     return true;
 }
 
-
-// bool handle_book_cancelation(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input , Parser &client_parser) {
-//     // check if user is logged in
-//     if (!logged_in) {
-//         // TODO: print error message
-//         pretty_write("You are not logged in\n", "red");
-//         return true;
-//     }
-
-// }
-
-
 bool handle_pass_day(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input , Parser &client_parser){
     if (!logged_in) {
         // TODO: print error message
@@ -1045,3 +1038,78 @@ bool handle_leave_room(bool &logged_in, nlohmann::json &request, nlohmann::json 
     return true;
     
 }
+
+
+bool handle_book_cancelation(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input , Parser &client_parser) {
+    // check if user is logged in
+    if (!logged_in) {
+        // TODO: print error message
+        pretty_write("You are not logged in\n", "red");
+        return true;
+    }
+
+    request["command"] = "get_user_reservations";
+    send(server_fd, request.dump().c_str(), request.dump().size(), 0);
+    memset(buff, 0, MAX_BUFFER_SIZE);
+    read(server_fd, buff, MAX_BUFFER_SIZE);
+
+    response = nlohmann::json::parse(buff);
+
+    if(response["status"] == 110){
+        pretty_write(response["message"], "green");
+        pretty_write("\n", "green");
+        string color = "magenta";
+        for (auto reservation : response["reservations"]) {
+            pretty_write(reservation, color);
+            pretty_write("\n", color);
+            color = (color == "magenta") ? "cyan" : "magenta";
+        }
+    }
+    
+
+    input.clear();
+    // string buff_in;
+    // cin >> buff_in;
+    memset(buff, 0, MAX_BUFFER_SIZE);
+    fflush(stdin);
+    read(0, buff, MAX_BUFFER_SIZE);
+    input = client_parser.split_string(buff, ' ');
+    if(input.size() != 3 || input[0] != "cancel"){
+        pretty_write("Invalid arguments\n", "red");               
+        // CODE 503: Bad sequence of commands
+        return true;
+    }
+    request["command"] = "cancel_reservation";
+    request["room_id"] = input[1];
+    request["num_of_beds"] = input[2];
+
+    send(server_fd, request.dump().c_str(), request.dump().size(), 0);
+    memset(buff, 0, MAX_BUFFER_SIZE);
+    read(server_fd, buff, MAX_BUFFER_SIZE);
+
+    response = nlohmann::json::parse(buff);
+
+    if(response["status"] == 401){
+        // CODE 108: Invalid input
+        // TODO: print error message
+        cout << RED << response["message"] << RESET << endl;
+        return true;
+    }
+
+    else if(response["status"] == 101){
+        // CODE 101: Room not found
+        cout << RED << response["message"] << RESET << endl;
+        return true;
+    }
+
+    else if(response["status"] == 110){
+        //CODE 110: Successfully done
+        cout << GREEN << response["message"] << RESET << endl;
+        return true;
+    }
+
+    return true;
+
+}
+
+
