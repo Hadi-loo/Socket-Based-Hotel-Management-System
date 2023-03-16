@@ -252,6 +252,14 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
         return handle_leave_room(request, user_fd);
     }
 
+    else if (command == "get_user_reservations"){
+        return handle_get_user_reservations(request, user_fd);
+    }
+
+    else if (command == "cancel_reservation"){
+        return handle_cancel_reservation(request, user_fd);
+    }
+
     // TODO: Add other commands
 
     else {
@@ -763,7 +771,7 @@ nlohmann::json HotelManagement::handle_booking(nlohmann::json request, int user_
         int total_cost = room->get_price() * num_of_beds * (check_out_date.get_days_since_epoch() - check_in_date.get_days_since_epoch());
         if(user->get_balance() >= total_cost){
             user->set_balance(user->get_balance() - total_cost);
-            Reservation* reservation = new Reservation(user->get_id() , room->get_id() , num_of_beds , check_in_date , check_out_date);
+            Reservation* reservation = new Reservation(user->get_id() , room->get_id() , num_of_beds , total_cost , check_in_date , check_out_date);
             reservations.push_back(reservation);
             room->add_reservation(reservation);
             response["status"] = 110;
@@ -859,5 +867,79 @@ nlohmann::json HotelManagement::handle_leave_room(nlohmann::json request, int us
         return response;
     }
 }
+
+nlohmann::json HotelManagement::handle_get_user_reservations(nlohmann::json request, int user_fd){
+    nlohmann::json response;
+    User* user = get_user_by_fd(user_fd);
+    for(auto reservation : reservations){
+        if(reservation->get_costumer_id() == user->get_id()){
+            response["reservations"].push_back(reservation->get_info());
+        }
+    }
+    response["message"] = "All your reservations retrieved successfully";
+    response["status"] = 110;
+    return response;
+}
+
+nlohmann::json HotelManagement::handle_cancel_reservation(nlohmann::json request, int user_fd){
+    /*
+    ***** Works based on the reserve which was reserved earlier *****
+    */
+    nlohmann::json response;
+    User* user = get_user_by_fd(user_fd);  
+
+    if (!is_number(request["room_id"])) {
+        // send error message to client
+        // CODE 401: error in input arguments
+        response["status"] = 401;
+        response["message"] = "room number has to be a number";
+        return response;
+    }
+
+    else if (!is_number(request["num_of_beds"])) {
+        // send error message to client
+        // CODE 401: error in input arguments
+        response["status"] = 401;
+        response["message"] = "bed count has to be a number";
+        return response;
+    }
+
+    string room_id_input = request["room_id"];
+    string bed_count_input = request["num_of_beds"];
+    int room_id = stoi(room_id_input);
+    int bed_count = stoi(bed_count_input);
+    bool found = false;     
+    for(int i = 0 ; i < reservations.size() ; i++){
+        if(reservations[i]->get_costumer_id() == user->get_id() && reservations[i]->get_room_id() == room_id
+         && reservations[i]->get_check_in_date().get_date() > this->current_date.get_date()){
+            found = true;
+            if(bed_count > reservations[i]->get_num_of_beds()){
+                response["status"] = 401;
+                response["message"] = "You can't cancel more beds than you reserved";
+                return response;
+            }
+            
+            Room* room = get_room_by_id(reservations[i]->get_room_id());
+            int returned_money = (bed_count * room->get_price() * (reservations[i]->get_check_out_date().get_days_since_epoch() - reservations[i]->get_check_in_date().get_days_since_epoch())) / 2;
+            int new_balance = user->get_balance() + returned_money;
+            user->set_balance(new_balance);
+            
+            room->remove_reservation(reservations[i]);
+            delete reservations[i];
+            reservations.erase(reservations.begin() + i);
+            break;
+        }
+    }
+    if (found == false){
+        response["status"] = 101;
+        response["message"] = "101: The desired room was not found.";
+        return response;
+    }
+    
+    response["status"] = 110;
+    response["message"] = "110: Successfully done.";
+    return response;
+}
+
 
 

@@ -78,6 +78,9 @@ public:
     nlohmann::json handle_delete_room(nlohmann::json request, int user_fd);
     nlohmann::json handle_pass_day(nlohmann::json request, int user_fd);
     nlohmann::json handle_leave_room(nlohmann::json request, int user_fd);
+    nlohmann::json handle_get_user_reservations(nlohmann::json request, int user_fd);
+    nlohmann::json handle_cancel_reservation(nlohmann::json request, int user_fd);
+
 
 };
 
