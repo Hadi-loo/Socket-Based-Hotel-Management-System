@@ -438,7 +438,10 @@ nlohmann::json HotelManagement::handle_get_rooms_info(nlohmann::json request, in
         response["status"] = 100;
         response["message"] = "all rooms info retrieved successfully";
         for (auto room:rooms){
-            response["summary"].push_back(room->get_info());
+            nlohmann::json room_info;
+            room_info["is_available"] = room->is__available();
+            room_info["room_info"] = room->get_info();
+            response["summary"].push_back(room_info);
         }
         return response;
     }

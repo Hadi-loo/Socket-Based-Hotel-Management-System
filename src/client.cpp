@@ -528,6 +528,21 @@ bool handle_show_rooms_info(bool &logged_in, nlohmann::json &request, nlohmann::
         return true;
     }
 
+    // user wants all rooms or only available rooms
+    string line;
+    cout << CYAN << ">> Do you want to see all rooms? (y/n): " << RESET;
+    fflush(stdin);
+    getline(cin, line);
+
+    Parser temp_parser(CONFIGS_PATH);
+    input = temp_parser.split_string(line, ' ');
+
+    if (input.size() != 1) {
+        // CODE 503: Bad sequence of commands
+        pretty_write("Invalid arguments\n", "red");
+        return true;
+    }
+
     request["command"] = "get_rooms_info";
 
     send(server_fd, request.dump().c_str(), request.dump().size(), 0);
@@ -551,9 +566,18 @@ bool handle_show_rooms_info(bool &logged_in, nlohmann::json &request, nlohmann::
         pretty_write("\n", "green");
         string color = "magenta";
         for (auto user_info : response["summary"]) {
-            pretty_write(user_info, color);
-            pretty_write("\n", color);
-            color = (color == "magenta") ? "cyan" : "magenta";
+            if (input[0] == "n" || input[0] == "no" || input[0] == "filter") {
+                if (user_info["is_available"] == true) {
+                    pretty_write(user_info["room_info"], color);
+                    pretty_write("\n", color);
+                    color = (color == "magenta") ? "cyan" : "magenta";
+                }
+            }
+            else {
+                pretty_write(user_info["room_info"], color);
+                pretty_write("\n", color);
+                color = (color == "magenta") ? "cyan" : "magenta";
+            }
         }
         return true;
     }
