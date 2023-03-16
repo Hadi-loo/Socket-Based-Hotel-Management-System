@@ -248,6 +248,10 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
         return handle_pass_day(request , user_fd);
     }
 
+    else if (command == "leave_room") {
+        return handle_leave_room(request, user_fd);
+    }
+
     // TODO: Add other commands
 
     else {
@@ -806,6 +810,51 @@ nlohmann::json HotelManagement::handle_pass_day(nlohmann::json request, int user
     response["status"] = 110;
     response["message"] = "110: Successfully done.";
     return response;
+}
+
+nlohmann::json HotelManagement::handle_leave_room(nlohmann::json request, int user_fd){
+    nlohmann::json response;
+
+    if (!is_number(request["room_num"])) {
+        // send error message to client
+        // CODE 503: error in input arguments
+        response["status"] = 503;
+        response["message"] = "Err 503: Room number has to be a number";
+        return response;
+    }
+
+    string _room_num = request["room_num"];
+    int room_num = stoi(_room_num);
+
+    Room* room = get_room_by_id(room_num);
+
+    if (room != NULL){
+        User* user = get_user_by_fd(user_fd);
+        vector<Reservation*> user_current_reservations = room->get_current_reservations_by_user_id(user->get_id(), this->current_date);
+        if(user_current_reservations.size() != 0){
+            for (auto reservation:user_current_reservations){
+                room->remove_reservation(reservation);
+                reservations.erase(std::remove(reservations.begin(), reservations.end(), reservation), reservations.end());
+                delete reservation;
+            }
+            room->update_room_status(this->current_date);
+            response["status"] = 110;
+            response["message"] = "CODE 110: Successfully done.";
+            return response;
+        }
+        else{
+            // CODE 102: user is not in this room
+            response["status"] = 102;
+            response["message"] = "ERR 102: You are not in this room.";
+            return response;
+        }
+    }
+    else {
+        // CODE 503: bad sequence of commands
+        response["status"] = 503;
+        response["message"] = "ERR 503: The desired room was not found.";
+        return response;
+    }
 }
 
 

@@ -169,7 +169,12 @@ void main_menu(int server_fd, bool &logged_in, bool &is_admin, Parser &client_pa
         }
 
         else if (input[0] == "8") {
-
+            bool should_continue = handle_leave_room(logged_in, request, response, server_fd, buff, input);
+            if (should_continue) {
+                continue;
+            } else {
+                break;
+            }
         }
 
         else if (input[0] == "9") {
@@ -976,4 +981,43 @@ bool handle_pass_day(bool &logged_in, nlohmann::json &request, nlohmann::json &r
         return true;
     }
     return true;
+}
+
+bool handle_leave_room(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input){
+    if (!logged_in) {
+        // print error message
+        pretty_write("You are not logged in\n", "red");
+        return true;
+    }
+
+    string room_num;
+    cout << CYAN << ">> Enter room number: " << RESET;
+    cin >> room_num;
+    
+    request["command"] = "leave_room";
+    request["room_num"] = room_num;
+
+    send(server_fd, request.dump().c_str(), request.dump().size(), 0);
+    memset(buff, 0, MAX_BUFFER_SIZE);
+    read(server_fd, buff, MAX_BUFFER_SIZE);
+    response = nlohmann::json::parse(buff);
+
+    if (response["status"] == 110) {
+        //CODE 110: Successfully done
+        cout << GREEN << response["message"] << RESET << endl;
+        return true;
+    }
+    else if (response["status"] == 102) {
+        // CODE 102: User is not in this room
+        cout << RED << response["message"] << RESET << endl;
+        return true;
+    }
+    else if (response["status"] == 503) {
+        // CODE 503: Bad sequence of commands
+        cout << RED << response["message"] << RESET << endl;
+        return true;
+    }
+
+    return true;
+    
 }

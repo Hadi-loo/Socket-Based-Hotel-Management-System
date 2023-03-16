@@ -38,6 +38,7 @@ public:
     int maximum_people_in_room(Date current_date);
     void update_room_status(Date current_date);
     void remove_reservation(Reservation* reservation);
+    vector<Reservation*> get_current_reservations_by_user_id(int user_id, Date current_date);
 
 };
 

@@ -167,4 +167,16 @@ void Room::remove_reservation(Reservation* reservation){
     }
 }
 
+vector<Reservation*> Room::get_current_reservations_by_user_id(int user_id, Date current_date){
+    vector<Reservation*> current_reservations;
+    for (auto reservation : reservations) {
+        if (reservation->get_costumer_id() == user_id) {
+            if (current_date.get_days_since_epoch() >= reservation->get_check_in_date().get_days_since_epoch()
+                && current_date.get_days_since_epoch() < reservation->get_check_out_date().get_days_since_epoch()) {
+                current_reservations.push_back(reservation);
+            }
+        }
+    }
+    return current_reservations;
+}
 
