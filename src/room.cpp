@@ -156,3 +156,15 @@ void Room::update_room_status(Date current_date){
     else
         is_available = true;
 }
+
+
+void Room::remove_reservation(Reservation* reservation){
+    for (int i = 0; i < reservations.size(); i++) {
+        if (reservations[i] == reservation) {
+            reservations.erase(reservations.begin() + i);
+            break;
+        }
+    }
+}
+
+

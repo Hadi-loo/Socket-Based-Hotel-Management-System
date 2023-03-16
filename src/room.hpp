@@ -37,6 +37,7 @@ public:
     void first_last_reservation_date(int &first_date, int &last_date);
     int maximum_people_in_room(Date current_date);
     void update_room_status(Date current_date);
+    void remove_reservation(Reservation* reservation);
 
 };
 
