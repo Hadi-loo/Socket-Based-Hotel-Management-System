@@ -174,7 +174,7 @@ void main_menu(int server_fd, bool &logged_in, bool &is_admin, Parser &client_pa
         }
 
         else if (input[0] == "8") {
-            bool should_continue = handle_leave_room(logged_in, request, response, server_fd, buff, input);
+            bool should_continue = handle_leave_room(logged_in, is_admin, request, response, server_fd, buff, input);
             if (should_continue) {
                 continue;
             } else {
@@ -206,7 +206,7 @@ void show_main_menu() {
     cout << YELLOW << "6. " << RESET << "Pass day\n";
     cout << YELLOW << "7. " << RESET << "Edit information\n";
     cout << YELLOW << "8. " << RESET << "Leave room\n";
-    cout << YELLOW << "9. " << RESET << "Rooms status\n";
+    cout << YELLOW << "9. " << RESET << "Manage Rooms\n";
     cout << YELLOW << "0. " << RESET << "Logout\n";
     cout << MAGENTA;
     cout << "_________________________________________________\n";
@@ -878,7 +878,6 @@ bool handle_edit_rooms(bool &logged_in, bool &is_admin, nlohmann::json &request,
 
 }
 
-
 bool handle_book_room(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input , Parser &client_parser) {
     // check if user is logged in
     if (!logged_in) {
@@ -1000,7 +999,7 @@ bool handle_pass_day(bool &logged_in, nlohmann::json &request, nlohmann::json &r
     return true;
 }
 
-bool handle_leave_room(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input){
+bool handle_leave_room(bool &logged_in, bool &is_admin, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input){
     if (!logged_in) {
         // print error message
         pretty_write("You are not logged in\n", "red");
@@ -1019,26 +1018,44 @@ bool handle_leave_room(bool &logged_in, nlohmann::json &request, nlohmann::json 
     read(server_fd, buff, MAX_BUFFER_SIZE);
     response = nlohmann::json::parse(buff);
 
-    if (response["status"] == 110) {
-        //CODE 110: Successfully done
-        cout << GREEN << response["message"] << RESET << endl;
-        return true;
+    if (!is_admin) {
+        if (response["status"] == 110) {
+            //CODE 110: Successfully done
+            cout << GREEN << response["message"] << RESET << endl;
+            return true;
+        }
+        else if (response["status"] == 102) {
+            // CODE 102: User is not in this room
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+        else if (response["status"] == 503) {
+            // CODE 503: Bad sequence of commands
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
     }
-    else if (response["status"] == 102) {
-        // CODE 102: User is not in this room
-        cout << RED << response["message"] << RESET << endl;
-        return true;
-    }
-    else if (response["status"] == 503) {
-        // CODE 503: Bad sequence of commands
-        cout << RED << response["message"] << RESET << endl;
-        return true;
+    else {
+        if (response["status"] == 503 || response["status"] == 101) {
+            // CODE 503: Bad sequence of commands
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+        else if (response["status"] == 412) {
+            // CODE 412: there is no reservation in this room right now 
+            cout << RED << response["message"] << RESET << endl;
+            return true;
+        }
+        else if (response["status"] == 413) {
+            // CODE 413: Successfully removed current reservations
+            cout << GREEN << response["message"] << RESET << endl;
+            return true;
+        }       
     }
 
     return true;
     
 }
-
 
 bool handle_book_cancelation(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input , Parser &client_parser) {
     // check if user is logged in

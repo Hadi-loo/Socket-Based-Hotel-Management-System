@@ -850,29 +850,51 @@ nlohmann::json HotelManagement::handle_leave_room(nlohmann::json request, int us
 
     if (room != NULL){
         User* user = get_user_by_fd(user_fd);
-        vector<Reservation*> user_current_reservations = room->get_current_reservations_by_user_id(user->get_id(), this->current_date);
-        if(user_current_reservations.size() != 0){
-            for (auto reservation:user_current_reservations){
-                room->remove_reservation(reservation);
-                reservations.erase(std::remove(reservations.begin(), reservations.end(), reservation), reservations.end());
-                delete reservation;
+        if (!user->is__admin()) {
+            vector<Reservation*> user_current_reservations = room->get_current_reservations_by_user_id(user->get_id(), this->current_date);
+            if(user_current_reservations.size() != 0){
+                for (auto reservation:user_current_reservations){
+                    room->remove_reservation(reservation);
+                    reservations.erase(std::remove(reservations.begin(), reservations.end(), reservation), reservations.end());
+                    delete reservation;
+                }
+                room->update_room_status(this->current_date);
+                response["status"] = 110;
+                response["message"] = "CODE 110: Successfully done.";
+                return response;
             }
-            room->update_room_status(this->current_date);
-            response["status"] = 110;
-            response["message"] = "CODE 110: Successfully done.";
-            return response;
+            else{
+                // CODE 102: user is not in this room
+                response["status"] = 102;
+                response["message"] = "ERR 102: You are not in this room.";
+                return response;
+            }
         }
-        else{
-            // CODE 102: user is not in this room
-            response["status"] = 102;
-            response["message"] = "ERR 102: You are not in this room.";
-            return response;
+        else {
+            vector<Reservation*> current_reservations = room->get_current_reservations(this->current_date);
+            if (current_reservations.size() != 0) {
+                for (auto reservation:current_reservations){
+                    room->remove_reservation(reservation);
+                    reservations.erase(std::remove(reservations.begin(), reservations.end(), reservation), reservations.end());
+                    delete reservation;
+                }
+                room->update_room_status(this->current_date);
+                response["status"] = 413;
+                response["message"] = "CODE 413: Successfully removed current reservations.";
+                return response;
+            }
+            else {
+                // CODE 412: there is no reservation in this room right now
+                response["status"] = 412;
+                response["message"] = "There is no reservation in this room right now.";
+                return response;
+            }
         }
     }
     else {
-        // CODE 503: bad sequence of commands
+        // CODE 503: bad sequence of commands. this should be 101 in case of admin
         response["status"] = 503;
-        response["message"] = "ERR 503: The desired room was not found.";
+        response["message"] = "The desired room was not found.";
         return response;
     }
 }

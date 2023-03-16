@@ -180,3 +180,13 @@ vector<Reservation*> Room::get_current_reservations_by_user_id(int user_id, Date
     return current_reservations;
 }
 
+vector<Reservation*> Room::get_current_reservations(Date current_date){
+    vector<Reservation*> current_reservations;
+    for (auto reservation : reservations) {
+        if (current_date.get_days_since_epoch() >= reservation->get_check_in_date().get_days_since_epoch()
+            && current_date.get_days_since_epoch() < reservation->get_check_out_date().get_days_since_epoch()) {
+            current_reservations.push_back(reservation);
+        }
+    }
+    return current_reservations;
+}

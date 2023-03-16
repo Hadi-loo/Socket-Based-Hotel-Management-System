@@ -39,6 +39,7 @@ public:
     void update_room_status(Date current_date);
     void remove_reservation(Reservation* reservation);
     vector<Reservation*> get_current_reservations_by_user_id(int user_id, Date current_date);
+    vector<Reservation*> get_current_reservations(Date current_date);
 
 };
 
