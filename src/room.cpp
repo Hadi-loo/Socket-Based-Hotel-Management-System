@@ -116,10 +116,13 @@ void Room::first_last_reservation_date(int &first_date, int &last_date) {
     last_date = last;
 }
 
-int Room::maximum_people_in_room() {
+int Room::maximum_people_in_room(Date current_date) {
     int first, last;
     first_last_reservation_date(first, last);
     int max = 0;
+    if (current_date.get_days_since_epoch() >= first) {
+        first = current_date.get_days_since_epoch();
+    }
     for (int day = first; day <= last; day++) {
         int people = 0;
         for (auto reservation : reservations) {
@@ -133,7 +136,6 @@ int Room::maximum_people_in_room() {
     }
     return max;
 }
-
 
 void Room::update_room_status(Date current_date){
     available_capacity = max_capacity;

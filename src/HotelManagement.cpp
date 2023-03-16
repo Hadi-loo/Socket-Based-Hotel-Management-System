@@ -596,7 +596,7 @@ nlohmann::json HotelManagement::handle_modify_room(nlohmann::json request, int u
             }
 
             else {
-                int max_people = room->maximum_people_in_room();
+                int max_people = room->maximum_people_in_room(current_date);
                 if (max_capacity < max_people) {
                     // send error message to client
                     // CODE 412: New room capacity can't be less than the number of people in the room
@@ -661,7 +661,7 @@ nlohmann::json HotelManagement::handle_delete_room(nlohmann::json request, int u
 
             else {
                 // check if there are people in the room or not
-                int max_people = room->maximum_people_in_room();
+                int max_people = room->maximum_people_in_room(current_date);
                 if (max_people > 0) {
                     // send error message to client
                     // CODE 412: Room can't be deleted because there are people in it
