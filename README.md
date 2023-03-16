@@ -1,4 +1,4 @@
-# Hotel AliBabaloo Description
+# Hotel AliBaba Description
 ## Hotel Management Service
 This is a hotel reservation system implemented in C++. It consists of a server and multiple clients, which communicate with each other using sockets. 
 The server handles requests from clients and manages the hotel reservation database. Clients can connect to the server and make various requests, such as reserving a room, checking availability, and canceling a reservation.
