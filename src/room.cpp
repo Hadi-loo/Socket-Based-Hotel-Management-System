@@ -12,6 +12,12 @@ Room::Room(int _id, int _max_capacity, int _available_capacity, int _price, bool
     reservations = _reservations;
 }
 
+Room::~Room() {
+    for (int i = 0; i < reservations.size(); i++) {
+        delete reservations[i];
+    }
+}
+
 int Room::get_id(){
     return id;
 }

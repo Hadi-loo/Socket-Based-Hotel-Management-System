@@ -672,7 +672,15 @@ nlohmann::json HotelManagement::handle_delete_room(nlohmann::json request, int u
                 else {
                     // CODE 106: Room deleted successfully
                     // send success message to client
+                    // we have to delete reservations of this room first
+                    for (int i = 0; i < reservations.size(); i++) {
+                        if (reservations[i]->get_room_id() == room->get_id()) {
+                            reservations.erase(reservations.begin() + i);
+                            i--;
+                        }
+                    }
                     rooms.erase(std::remove(rooms.begin(), rooms.end(), room), rooms.end());
+                    delete room;
                     response["status"] = 106;
                     response["message"] = "Room deleted successfully";
                     return response;

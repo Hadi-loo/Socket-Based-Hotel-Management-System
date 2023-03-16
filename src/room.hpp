@@ -18,6 +18,7 @@ private:
 
 public:
     Room(int id, int max_capacity, int available_capacity, int price, bool is_available, vector<Reservation*> reservations);
+    ~Room();
 
     int get_id();
     int get_max_capacity();
