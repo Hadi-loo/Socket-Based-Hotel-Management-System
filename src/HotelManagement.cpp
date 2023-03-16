@@ -157,18 +157,27 @@ Date convert_string_to_date(string &date , Parser &parser){
 
 void HotelManagement::get_starting_date(Parser &server_parser){
     string input_date;
-    cout << "Set the current date of the system:\n >> Date: ";
-    cin >> input_date;                                                      // Remember to handle exceptions!  
+    cout << "Set the current date of the system:\n>> Date: ";
+    cin >> input_date; 
     vector<string> input = server_parser.split_string(input_date , '-');
     if(input.size() == 3){
-        if(is_number(input[0]) == true || is_number(input[1]) == true || is_number(input[2]) == true){
-            current_date.set_date(stoi(input[2]) , stoi(input[1]) , stoi(input[0]));
-            return;
+        if(is_number(input[0]) == true && is_number(input[1]) == true && is_number(input[2]) == true){
+            try {
+                current_date.set_date(stoi(input[2]) , stoi(input[1]) , stoi(input[0]));
+                string ymd_string = current_date.ymd_string();
+                cout << GREEN << "Date set to " << ymd_string << " successfully!" << RESET << endl;
+                return;
+            }
+            catch (const std::exception& e) {
+                cout << "401: Invalid Value!" << endl;
+                get_starting_date(server_parser);
+                return;
+            }
         }
     }
     cout << "401: Invalid Value!" << endl;
     get_starting_date(server_parser);
-
+    return;
 }
 
 nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user_fd){

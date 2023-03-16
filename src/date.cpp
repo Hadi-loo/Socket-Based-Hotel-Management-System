@@ -23,6 +23,13 @@ Date::Date(int _year, int _month, int _day) {
     
 }
 
+Date::Date(date::year_month_day _date) {
+    year = static_cast<int>(_date.year());
+    month = unsigned(_date.month());
+    day = unsigned(_date.day());
+    date = _date;
+}
+
 Date::~Date() {
     // TODO
 }

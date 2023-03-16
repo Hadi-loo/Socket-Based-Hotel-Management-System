@@ -15,6 +15,7 @@ private:
 public:
     Date();
     Date(int _year, int _month, int _day);
+    Date(date::year_month_day _date);
     ~Date();
     void set_year(int _year);
     void set_month(int _month);
