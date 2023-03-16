@@ -71,6 +71,25 @@ There are 3 available command in this menu:
 
 ### Main Menu
 
+Here is the list of available commands:   
+
+![Screenshot from 2023-03-16 20-09-42](https://user-images.githubusercontent.com/88896798/225705341-2fa5fb5d-92f1-4337-b0d2-edf37d9c11df.png)
+   
+1. View user information:   
+    
+    ![Screenshot from 2023-03-16 20-11-59](https://user-images.githubusercontent.com/88896798/225705492-b7852584-c812-4600-a2e4-dffbb88721c2.png)
+
+2. View all users:
+  This command is only available for admin users.   
+  
+    ![Screenshot from 2023-03-16 20-14-00](https://user-images.githubusercontent.com/88896798/225705673-f3c18dde-55ba-4528-abc1-df91a08c4ff2.png)
+
+3. View rooms information:   
+   
+    ![Screenshot from 2023-03-16 20-16-52](https://user-images.githubusercontent.com/88896798/225706305-bf9e2a42-4519-464b-a8d6-c6c1986b552f.png)
+
+
+
 ## How to Run
 1. navigate to project's root directory
 2. make client and server executables using:
