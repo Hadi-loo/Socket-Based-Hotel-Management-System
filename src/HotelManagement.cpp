@@ -153,7 +153,17 @@ Date convert_string_to_date(string &date , Parser &parser){
     return Date(year , month , day);
 }
 
-
+void HotelManagement::update_reservations(){
+    for(int i = 0 ; i < reservations.size() ; i++){
+        if(current_date.get_date() >= reservations[i]->get_check_out_date().get_date()){
+            Room* room = get_room_by_id(reservations[i]->get_room_id());
+            room->remove_reservation(reservations[i]);
+            delete reservations[i];
+            reservations.erase(reservations.begin() + i);
+            i--;
+        }
+    }
+}
 
 void HotelManagement::get_starting_date(Parser &server_parser){
     string input_date;
@@ -786,10 +796,13 @@ nlohmann::json HotelManagement::handle_pass_day(nlohmann::json request, int user
     int value = stoi(value_input);
     this->current_date.pass_day(value);
 
+    this->update_reservations();
+
     for (auto room:rooms){
         room->update_room_status(this->current_date);
     }
 
+    cout << GREEN << "Current date is: " << this->current_date.get_date() << RESET << endl;
     response["status"] = 110;
     response["message"] = "110: Successfully done.";
     return response;

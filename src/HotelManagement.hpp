@@ -44,7 +44,7 @@ public:
     void add_reservations(vector<Room*> reservations);
     
     void get_starting_date(Parser &server_parser);
-
+    void update_reservations();
 
     User* get_user_by_id(int id);
     User* get_user_by_username(string username);
