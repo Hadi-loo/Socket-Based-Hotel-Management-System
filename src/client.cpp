@@ -302,7 +302,7 @@ bool handle_signup(bool &logged_in, nlohmann::json &request, nlohmann::json &res
             // CODE 503: invalid arguments
             // TODO: print error message
             cout << RED;
-            cout << "Invalid arguments: ";
+            cout << "503: Invalid arguments: ";
             cout << RESET;
             cout << response["message"] << "\n";
             return true;
@@ -311,7 +311,7 @@ bool handle_signup(bool &logged_in, nlohmann::json &request, nlohmann::json &res
             // CODE 430: user not found
             // TODO: print error message
             cout << RED;
-            cout << "User not found!\n";
+            cout << "430: User not found!\n";
             cout << RESET;
             return true;
         }
@@ -319,7 +319,7 @@ bool handle_signup(bool &logged_in, nlohmann::json &request, nlohmann::json &res
             // CODE 231: user info changed successfully
             // TODO: print success message
             cout << GREEN;
-            cout << "Successfully signed up!\n";
+            cout << "231: Successfully signed up!\n";
             cout << RESET;
             return true;
         }
@@ -407,7 +407,7 @@ bool handle_signout(bool &logged_in, nlohmann::json &request, nlohmann::json &re
     if (response["status"] == 404) {
         // CODE 404: user not found
         // TODO: print error message
-        pretty_write("User not found\n", "red");
+        pretty_write("404: User not found\n", "red");
         return true;
     }
 
@@ -894,7 +894,7 @@ bool handle_book_room(bool &logged_in, nlohmann::json &request, nlohmann::json &
     input = client_parser.split_string(buff, ' ');
 
     if(input.size() != 5){
-        pretty_write("Invalid arguments\n", "red");                 // shouldn't be 503?
+        pretty_write("Invalid arguments\n", "red");                 
         // CODE 503: Bad sequence of commands
         return true;
     }
@@ -904,16 +904,12 @@ bool handle_book_room(bool &logged_in, nlohmann::json &request, nlohmann::json &
     check_in_date = input[3];
     check_out_date = input[4];
 
-    /*                  !!!! Check correctness of inputs !!!!                   */
 
     request["command"] = "book_room";
     request["room_num"] = room_num;
     request["num_of_beds"] = num_of_beds;
     request["check_in_date"] = check_in_date;
     request["check_out_date"] = check_out_date;
-
-
-    /*                  !!!! Check correctness of inputs !!!!                   */
 
     send(server_fd, request.dump().c_str(), request.dump().size(), 0);
     memset(buff, 0, MAX_BUFFER_SIZE);
