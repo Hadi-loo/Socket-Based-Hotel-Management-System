@@ -74,10 +74,15 @@ int main(int argc, char const *argv[]) {
     hotel_managment.add_rooms(rooms);
     hotel_managment.add_reservations(rooms);
 
+    hotel_managment.get_starting_date(server_parser);
 
     string log_message = "Server is up and running on " + server_ip_address + ":" + to_string(server_port) + "...\n";
     server_logger.log(SERVER_LOG_FILE_NAME, log_message);
     cout << log_message;
+
+    
+    
+
 
     while (1) {
         working_set = master_set;
