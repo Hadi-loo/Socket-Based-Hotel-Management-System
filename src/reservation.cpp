@@ -2,6 +2,15 @@
 #include "iostream"
 
 
+Reservation::Reservation(int costumer_id, int room_id, int number_of_beds, int payed_money, Date check_in_date, Date check_out_date) {
+    this->costumer_id = costumer_id;
+    this->room_id = room_id;
+    this->number_of_beds = number_of_beds;
+    this->check_in_date = check_in_date;
+    this->check_out_date = check_out_date;
+    this->payed_money = payed_money;
+}
+
 Reservation::Reservation(int costumer_id, int room_id, int number_of_beds, Date check_in_date, Date check_out_date) {
     this->costumer_id = costumer_id;
     this->room_id = room_id;
@@ -25,6 +34,10 @@ int Reservation::get_room_id(){
 
 int Reservation::get_num_of_beds(){
     return number_of_beds;
+}
+
+int Reservation::get_payed_money(){
+    return payed_money;
 }
 
 Date Reservation::get_check_in_date(){
