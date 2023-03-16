@@ -735,7 +735,7 @@ nlohmann::json HotelManagement::handle_booking(nlohmann::json request, int user_
         }
         
         User* user = get_user_by_fd(user_fd);
-        int total_cost = room->get_price() * num_of_beds * (check_out_date.get_days_since_epoch() - check_in_date.get_days_since_epoch() + 1);
+        int total_cost = room->get_price() * num_of_beds * (check_out_date.get_days_since_epoch() - check_in_date.get_days_since_epoch());
         if(user->get_balance() >= total_cost){
             user->set_balance(user->get_balance() - total_cost);
             Reservation* reservation = new Reservation(user->get_id() , room->get_id() , num_of_beds , check_in_date , check_out_date);

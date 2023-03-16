@@ -89,7 +89,7 @@ bool Room::check_room_availability(Date check_in_date, Date check_out_date , int
         int capacity = max_capacity - num_of_beds;
 
         for (auto reservation : reservations){
-            if(reservation->get_check_in_date().get_days_since_epoch() <= day && reservation->get_check_out_date().get_days_since_epoch() >= day)
+            if(reservation->get_check_in_date().get_days_since_epoch() <= day && reservation->get_check_out_date().get_days_since_epoch() > day)
                 capacity -= reservation->get_num_of_beds();
             if(capacity < 0)
                 return false;
@@ -126,7 +126,7 @@ int Room::maximum_people_in_room(Date current_date) {
     for (int day = first; day <= last; day++) {
         int people = 0;
         for (auto reservation : reservations) {
-            if (reservation->get_check_in_date().get_days_since_epoch() <= day && reservation->get_check_out_date().get_days_since_epoch() >= day) {
+            if (reservation->get_check_in_date().get_days_since_epoch() <= day && reservation->get_check_out_date().get_days_since_epoch() > day) {
                 people += reservation->get_num_of_beds();
             }
         }
@@ -141,7 +141,7 @@ void Room::update_room_status(Date current_date){
     available_capacity = max_capacity;
     for (auto reservation : reservations){
         if(current_date.get_date() >= reservation->get_check_in_date().get_date()
-            && current_date.get_date() <= reservation->get_check_out_date().get_date()){
+            && current_date.get_date() < reservation->get_check_out_date().get_date()){
                 available_capacity -= reservation->get_num_of_beds();
             }
     }
