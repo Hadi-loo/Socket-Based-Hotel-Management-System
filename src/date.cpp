@@ -78,3 +78,30 @@ string Date::dmy_string() {
 string Date::ymd_string() {
     return format("%Y-%m-%d", date);
 }
+
+void Date::pass_day(int value){
+    int current_date = get_days_since_epoch();
+    current_date += value;
+    auto days_since_epoch = date::sys_days{date::days{current_date}};
+    date::year_month_day ymd = date::year_month_day{days_since_epoch};
+    this->date = ymd;
+    this->year = static_cast<int>(ymd.year());
+    this->month = unsigned(ymd.month());
+    this->day = unsigned(ymd.day());
+}
+
+
+void Date::set_date(int _year, int _month, int _day){
+    if (_year >= 1) {
+        if (_month >= 1 && _month <= 12) {
+            if (_day >= 1 && _day <= 31) {
+                year = _year;
+                month = _month;
+                day = _day;
+                date = date::year_month_day(date::year(_year) / date::month(_month) / date::day(_day));
+                return;
+            }
+        }
+    }
+}
+
