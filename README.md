@@ -18,12 +18,12 @@ In the src folder, there are several class entities including:
 - [User](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/src/user.hpp): This class contains the data of program users, including ordinary users and admin.
 - [Room](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/src/room.hpp): This class contains room data.
 - [Reservation](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/src/reservation.hpp): The entity of reservation made by users.
-- [Date](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/src/date.hpp): Contain date data.
+- [Date](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/src/date.hpp): Contain date data. We use [Howard Hinnant date library](https://github.com/HowardHinnant/date) to handel date operations.
 - [Logger](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/src/logger.hpp): This class saves the log of the program into .log files.
 - [Parser](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/src/parser.hpp): Used for parsing JSON and string data.
 
 ## Server
-  The server IP and port can be modified from the [config.json](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/configuration/config.json) file.   
+  The server IP and port can be modified from the [config.json](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/configuration/config.json) file. The server gets requests in JSON format, parses them and makes a response in JSON again, and sends it to the corresponding client.    
   Here is the roadmap of how to run and setup server:
   1. Run server executable:
 ```text
@@ -37,7 +37,7 @@ In the src folder, there are several class entities including:
 
 
 ## Client
-Each client can connect to the main server whose config is found in the [config.json](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/configuration/config.json) file.   
+Each client can connect to the main server whose config is found in the [config.json](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/configuration/config.json) file. The client gets requests in JSON format, parses them and makes a response in JSON again, and sends it to the main server.  
 the client file can be run via following command:
 ```
 ./client.out
