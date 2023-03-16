@@ -85,7 +85,7 @@ int main(int argc, char const *argv[]) {
     server_logger.log(SERVER_LOG_FILE_NAME, log_message);
     cout << log_message;
 
-    
+    hotel_managment.update_reservations();
     
 
 

@@ -495,7 +495,7 @@ nlohmann::json HotelManagement::handle_edit_info(nlohmann::json request, int use
         // CODE 312: Information was changed successfully
         // send success message to client
         response["status"] = 312;
-        response["message"] = "Information was changed successfully";
+        response["message"] = "312: Information was changed successfully";
         return response;
 
     }
