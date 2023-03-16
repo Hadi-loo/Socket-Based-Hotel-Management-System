@@ -648,8 +648,8 @@ bool handle_edit_info(bool &logged_in, bool &is_admin, nlohmann::json &request, 
         return true;
     }
 
-    else if (response["status"] == 110) {
-        // CODE 310: successfully done
+    else if (response["status"] == 312) {
+        // CODE 312: successfully done
         // TODO: print success message
         cout << GREEN << response["message"] << RESET << endl;
         return true;

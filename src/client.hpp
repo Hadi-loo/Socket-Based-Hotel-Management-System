@@ -35,4 +35,6 @@ bool handle_pass_day(bool &logged_in, nlohmann::json &request, nlohmann::json &r
 bool handle_edit_rooms(bool &logged_in, bool &is_admin, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
 bool handle_leave_room(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input);
 bool handle_book_cancelation(bool &logged_in, nlohmann::json &request, nlohmann::json &response, int server_fd, char *buff, vector<string> &input , Parser &client_parser);
+
+
 #endif
