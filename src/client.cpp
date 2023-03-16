@@ -965,6 +965,11 @@ bool handle_pass_day(bool &logged_in, nlohmann::json &request, nlohmann::json &r
         cout << RED << response["message"] << RESET << endl;
         return true;
     }
+    else if(response["status"] == 403){
+        // CODE 403: Access denied!
+        cout << RED << response["message"] << RESET << endl;
+        return true;
+    }
     else if(response["status"] == 110){
         //CODE 110: Successfully done
         cout << GREEN << response["message"] << RESET << endl;
