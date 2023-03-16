@@ -155,6 +155,22 @@ Date convert_string_to_date(string &date , Parser &parser){
 
 
 
+void HotelManagement::get_starting_date(Parser &server_parser){
+    string input_date;
+    cout << "Set the current date of the system:\n >> Date: ";
+    cin >> input_date;                                                      // Remember to handle exceptions!  
+    vector<string> input = server_parser.split_string(input_date , '-');
+    if(input.size() == 3){
+        if(is_number(input[0]) == true || is_number(input[1]) == true || is_number(input[2]) == true){
+            current_date.set_date(stoi(input[2]) , stoi(input[1]) , stoi(input[0]));
+            return;
+        }
+    }
+    cout << "401: Invalid Value!" << endl;
+    get_starting_date(server_parser);
+
+}
+
 nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user_fd){
     // TODO
     // handel request.size() == 0 in server.cpp file
@@ -207,6 +223,10 @@ nlohmann::json HotelManagement::handle_request(nlohmann::json request , int user
 
     else if (command == "delete_room") {
         return handle_delete_room(request, user_fd);
+    }
+
+    else if (command == "pass_day"){
+        return handle_pass_day(request , user_fd);
     }
 
     // TODO: Add other commands
@@ -727,3 +747,34 @@ nlohmann::json HotelManagement::handle_booking(nlohmann::json request, int user_
     return response;
     
 }
+
+nlohmann::json HotelManagement::handle_pass_day(nlohmann::json request, int user_fd){
+    nlohmann::json response;
+
+    User* user = get_user_by_fd(user_fd);
+    if(user->is__admin() == false){
+        response["status"] = 403;
+        response["message"] = "403: Access denied!";
+        return response;
+    }
+
+    if(!is_number(request["value"])){
+        response["status"] = 401;
+        response["message"] = "401: Invalid value!";
+        return response;
+    }
+
+    string value_input = request["value"];
+    int value = stoi(value_input);
+    this->current_date.pass_day(value);
+
+    for (auto room:rooms){
+        room->update_room_status(this->current_date);
+    }
+
+    response["status"] = 110;
+    response["message"] = "110: Successfully done.";
+    return response;
+}
+
+

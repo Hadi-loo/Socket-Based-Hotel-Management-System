@@ -42,6 +42,9 @@ public:
     
     void add_reservation(Reservation* reservation);
     void add_reservations(vector<Room*> reservations);
+    
+    void get_starting_date(Parser &server_parser);
+
 
     User* get_user_by_id(int id);
     User* get_user_by_username(string username);
@@ -73,6 +76,7 @@ public:
     nlohmann::json handle_add_room(nlohmann::json request, int user_fd);
     nlohmann::json handle_modify_room(nlohmann::json request, int user_fd);
     nlohmann::json handle_delete_room(nlohmann::json request, int user_fd);
+    nlohmann::json handle_pass_day(nlohmann::json request, int user_fd);
 
 };
 
