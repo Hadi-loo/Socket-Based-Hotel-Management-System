@@ -123,7 +123,10 @@ Here is the list of available commands:
 ```text
     room <room number>
 ```
-   
+If you are admin, this command forces people to leave rooms that they are in right now. </br>
+
+
+If you are a regular customer, you should use this command to leave early. </br>
    ![Screenshot from 2023-03-16 22-06-11](https://user-images.githubusercontent.com/88896798/225720235-76ffa0cc-5732-43be-8114-bfb8e32acf03.png)
 
 
