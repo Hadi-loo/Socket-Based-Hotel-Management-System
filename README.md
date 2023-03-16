@@ -118,6 +118,46 @@ Here is the list of available commands:
   ![Screenshot from 2023-03-16 20-44-15](https://user-images.githubusercontent.com/88896798/225709344-1046d106-5ba3-4771-9910-79d6c3cff49c.png)
 
 
+8. Leaving Room:
+```text
+    room <room number>
+```
+   
+   ![Screenshot from 2023-03-16 22-06-11](https://user-images.githubusercontent.com/88896798/225720235-76ffa0cc-5732-43be-8114-bfb8e32acf03.png)
+
+
+9. Manage Rooms:
+There are 3 different managing options:
+- Add a room:
+```text
+    add <room number> <max capacity> <price>
+```
+
+![Screenshot from 2023-03-16 22-18-14](https://user-images.githubusercontent.com/88896798/225723263-326b57b7-c352-4e07-b08c-30c760f80ab6.png)
+
+
+- Modify a room:
+```text
+    modify <room number> <new max capacity> <new price>
+```
+
+![Screenshot from 2023-03-16 22-18-57](https://user-images.githubusercontent.com/88896798/225723274-cd828c31-c895-4021-b269-1c2bfab30d87.png)
+
+
+- Delete a room:
+```text
+    remove <room number>
+```   
+
+![Screenshot from 2023-03-16 22-19-13](https://user-images.githubusercontent.com/88896798/225723301-dd2b4566-9e32-4bf3-80d9-bebbc38de6ed.png)
+
+
+
+0. Log out:  
+
+![Screenshot from 2023-03-16 22-12-21](https://user-images.githubusercontent.com/88896798/225721528-5bee1291-e5a4-4b1d-9dbe-ec0e29280c2b.png)
+
+
 
 ## How to Run
 1. navigate to project's root directory
