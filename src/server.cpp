@@ -107,6 +107,7 @@ int main(int argc, char const *argv[]) {
                         hotel_managment.user_disconnected(i);
                         User* user = hotel_managment.get_user_by_fd(i);
                         if (user != NULL) {
+                            user->sign_out();
                             log_message = "User " + user->get_username() + " disconnected\n";
                             server_logger.log(user->get_username() + ".log", log_message);
                         } else {
