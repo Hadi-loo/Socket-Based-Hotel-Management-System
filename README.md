@@ -47,7 +47,7 @@ The client program contains two main menu, the Login, and the Main menu.
 
 ### Login Menu
 There are 3 available command in this menu:
-- Sign up:
+- **Sign up**:
 ```
 >> signup <username>
 >> <password>
@@ -57,13 +57,13 @@ There are 3 available command in this menu:
 ```
 ![Screenshot from 2023-03-16 20-01-45](https://user-images.githubusercontent.com/88896798/225689475-cf5b1c0c-f467-4c95-81bc-18287b73a6aa.png)
 
-- Sign in:
+- **Sign in**:
 ```
 >> signin <username> <password>
 ```
 ![Screenshot from 2023-03-16 20-06-28](https://user-images.githubusercontent.com/88896798/225689822-d4eb214f-e03c-466f-9fec-88a66f4a8692.png)
 
-- Exit
+- **Exit:**
 ```
 >> exit
 ```
@@ -74,22 +74,23 @@ There are 3 available command in this menu:
 
 Here is the list of available commands:   
 
-![Screenshot from 2023-03-16 20-09-42](https://user-images.githubusercontent.com/88896798/225705341-2fa5fb5d-92f1-4337-b0d2-edf37d9c11df.png)
-   
-1. View user information:   
+![Screenshot from 2023-03-16 23-14-50](https://user-images.githubusercontent.com/88896798/225735690-c924d549-c95f-443e-ae85-11dd618d65b6.png)
+
+
+1. **View user information**:   
     
     ![Screenshot from 2023-03-16 20-11-59](https://user-images.githubusercontent.com/88896798/225705492-b7852584-c812-4600-a2e4-dffbb88721c2.png)
 
-2. View all users:
+2. **View all users**:
   This command is only available for admin users.   
   
    ![Screenshot from 2023-03-16 20-14-00](https://user-images.githubusercontent.com/88896798/225705673-f3c18dde-55ba-4528-abc1-df91a08c4ff2.png)
 
-3. View rooms information:   
+3. **View rooms information**:   
    
     ![Screenshot from 2023-03-16 20-16-52](https://user-images.githubusercontent.com/88896798/225706305-bf9e2a42-4519-464b-a8d6-c6c1986b552f.png)
 
-4. Booking:
+4. **Booking**:
 
 ```text
     book <RoomNum> <NumOfBeds> <CheckInDate> <CheckOutDate>
@@ -97,21 +98,21 @@ Here is the list of available commands:
 
    ![Screenshot from 2023-03-16 20-21-22](https://user-images.githubusercontent.com/88896798/225707776-c6b41368-86b1-4295-a0be-237bc909578f.png)
 
-5. Canceling:
+5. **Canceling**:
 
 ```text
     canceling <RoomNum> <Number of reservation(per person)>
 ```
    ![Screenshot from 2023-03-16 20-30-52](https://user-images.githubusercontent.com/88896798/225708521-a6d1efa3-d27a-4457-8496-d574f96d9bca.png)
 
-6. Pass Day:
+6. **Pass Day**:
 ```text
     passDay <value>
 ```
 
   ![Screenshot from 2023-03-16 20-32-57](https://user-images.githubusercontent.com/88896798/225708826-56389501-03a5-4d8a-a403-74331728597d.png)
   
-7. Edit Information:
+7. **Edit Information**:
 ```text
     passDay <value>
 ```
@@ -119,7 +120,7 @@ Here is the list of available commands:
   ![Screenshot from 2023-03-16 20-44-15](https://user-images.githubusercontent.com/88896798/225709344-1046d106-5ba3-4771-9910-79d6c3cff49c.png)
 
 
-8. Leaving Room:
+8. **Leaving Room**:
 ```text
     room <room number>
 ```
@@ -134,9 +135,9 @@ If you are a regular customer, you should use this command to leave early. </br>
 ![Screenshot from 2023-03-16 22-06-11](https://user-images.githubusercontent.com/88896798/225720235-76ffa0cc-5732-43be-8114-bfb8e32acf03.png)
 
 
-9. Manage Rooms:
+9. **Manage Rooms**:
 There are 3 different managing options:
-- Add a room:
+- **Add a room**:
 ```text
     add <room number> <max capacity> <price>
 ```
@@ -144,7 +145,7 @@ There are 3 different managing options:
 ![Screenshot from 2023-03-16 22-18-14](https://user-images.githubusercontent.com/88896798/225723263-326b57b7-c352-4e07-b08c-30c760f80ab6.png)
 
 
-- Modify a room:
+- **Modify a room**:
 ```text
     modify <room number> <new max capacity> <new price>
 ```
@@ -152,7 +153,7 @@ There are 3 different managing options:
 ![Screenshot from 2023-03-16 22-18-57](https://user-images.githubusercontent.com/88896798/225723274-cd828c31-c895-4021-b269-1c2bfab30d87.png)
 
 
-- Delete a room:
+- **Delete a room**:
 ```text
     remove <room number>
 ```   
@@ -161,7 +162,7 @@ There are 3 different managing options:
 
 
 
-0. Log out:  
+0. **Log out**:  
 
 ![Screenshot from 2023-03-16 22-12-21](https://user-images.githubusercontent.com/88896798/225721528-5bee1291-e5a4-4b1d-9dbe-ec0e29280c2b.png)
 
