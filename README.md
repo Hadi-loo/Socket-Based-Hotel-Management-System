@@ -7,11 +7,11 @@ The clients interact with the system using a command-line interface (CLI), which
 
 ## Project Structure
 There are 5 main folders containing the source and info of this project:
-1. src folder: This folder contains the source code of the project.
-2. logs folder: This folder contains the logs of the main server and each client.
-3. configuration: This folder contains the needed config files.
-4. bin: This folder contains the object files (.o) produced after compiling src files.
-5. description: The Persian description of the project.
+1. [src folder](https://github.com/Hadi-loo/CN_CHomeworks_1/tree/master/src): This folder contains the source code of the project.
+2. [logs folder](https://github.com/Hadi-loo/CN_CHomeworks_1/tree/master/logs): This folder contains the logs of the main server and each client.
+3. [configuration](https://github.com/Hadi-loo/CN_CHomeworks_1/tree/master/configuration): This folder contains the needed config files.
+4. [bin](https://github.com/Hadi-loo/CN_CHomeworks_1/tree/master/bin): This folder contains the object files (.o) produced after compiling src files.
+5. [description](https://github.com/Hadi-loo/CN_CHomeworks_1/tree/master/description): The Persian description of the project.
 
 In the src folder, there are several class entities including:
 - [HotelManagement](https://github.com/Hadi-loo/CN_CHomeworks_1/blob/master/src/HotelManagement.hpp): The main processing unit of the program, this class handles the given requests to the server, and gives responses to the clients.
