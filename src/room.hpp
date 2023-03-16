@@ -35,6 +35,7 @@ public:
     bool check_room_availability(Date check_in_date, Date check_out_date , int &num_of_beds);
     void first_last_reservation_date(int &first_date, int &last_date);
     int maximum_people_in_room(); 
+    void update_room_status(Date current_date);
 
 };
 

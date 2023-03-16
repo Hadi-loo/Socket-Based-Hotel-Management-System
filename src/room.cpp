@@ -135,3 +135,16 @@ int Room::maximum_people_in_room() {
 }
 
 
+void Room::update_room_status(Date current_date){
+    available_capacity = max_capacity;
+    for (auto reservation : reservations){
+        if(current_date.get_date() >= reservation->get_check_in_date().get_date()
+            && current_date.get_date() <= reservation->get_check_out_date().get_date()){
+                available_capacity -= reservation->get_num_of_beds();
+            }
+    }
+    if(available_capacity == 0)
+        is_available = false;
+    else
+        is_available = true;
+}
