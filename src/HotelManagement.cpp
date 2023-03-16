@@ -634,6 +634,7 @@ nlohmann::json HotelManagement::handle_modify_room(nlohmann::json request, int u
                 // send success message to client
                 room->set_max_capacity(max_capacity);
                 room->set_price(price);
+                room->update_room_status(current_date);
                 response["status"] = 105;
                 response["message"] = "Room modified successfully";
                 return response;
