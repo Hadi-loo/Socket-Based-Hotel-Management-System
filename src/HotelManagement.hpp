@@ -46,6 +46,9 @@ public:
     void get_starting_date(Parser &server_parser);
     void update_reservations();
 
+    vector<User*> get_users();
+    vector<Room*> get_rooms();
+
     User* get_user_by_id(int id);
     User* get_user_by_username(string username);
     User* get_user_by_fd(int fd);

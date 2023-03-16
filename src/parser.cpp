@@ -56,13 +56,11 @@ vector<Room*> Parser::parse_rooms(string rooms_file_name){
             vector<string> checkOutDate = split_string(reservation_info["checkoutDate"], '-');
             Date _checkInDate = Date(stoi(checkInDate[2]), stoi(checkInDate[1]), stoi(checkInDate[0]));
             Date _checkOutDate = Date(stoi(checkOutDate[2]), stoi(checkOutDate[1]), stoi(checkOutDate[0]));
-            string temp = room_info["number"];
-            Reservation* reservation = new Reservation(reservation_info["id"], stoi(temp) , reservation_info["numOfBeds"], _checkInDate , _checkOutDate);
+            Reservation* reservation = new Reservation(reservation_info["id"], room_info["number"] , reservation_info["numOfBeds"], _checkInDate , _checkOutDate);
             reservations.push_back(reservation);
         }
         bool is_available = (room_info["status"] == 1) ? false : true;
-        string temp = room_info["number"];
-        Room* room = new Room(stoi(temp), room_info["maxCapacity"], room_info["capacity"], room_info["price"], is_available , reservations);
+        Room* room = new Room(room_info["number"], room_info["maxCapacity"], room_info["capacity"], room_info["price"], is_available , reservations);
         rooms.push_back(room);
     }
     rooms_file.close();
@@ -96,7 +94,6 @@ void Parser::rewrite_users_file(string users_file_name, vector<User*> users) {
     users_file.open(configs_path + "/" + users_file_name, std::ofstream::out);
     nlohmann::json j;
     j["users"] = nlohmann::json::array();
-    j["users"].push_back({});
 
     for (auto user : users) {
         if (user->is__admin()) {
@@ -116,15 +113,13 @@ void Parser::rewrite_rooms_file(string rooms_file_name, vector<Room*> rooms) {
     rooms_file.open(configs_path + "/" + rooms_file_name, std::ofstream::out);
     nlohmann::json j;
     j["rooms"] = nlohmann::json::array();
-    j["rooms"].push_back({});
 
     for (auto room : rooms) {
         nlohmann::json users_array = nlohmann::json::array();
-        users_array.push_back({});
-        j["rooms"].push_back({{"number", room->get_id()}, {"maxCapacity", room->get_max_capacity()}, {"capacity", room->get_max_capacity()}, {"price", room->get_price()}, {"status", room->is__available()}, {"users", users_array}});
         for (auto reservation : room->get_reservations()) {
             users_array.push_back({{"id", reservation->get_costumer_id()}, {"reserveDate", reservation->get_check_in_date().dmy_string()}, {"checkoutDate", reservation->get_check_out_date().dmy_string()}, {"numOfBeds", reservation->get_num_of_beds()}});
         }
+        j["rooms"].push_back({{"number", room->get_id()}, {"maxCapacity", room->get_max_capacity()}, {"capacity", room->get_max_capacity()}, {"price", room->get_price()}, {"status", (room->is__available() ? 0 : 1)}, {"users", users_array}});
     }
 
     rooms_file << j.dump(4);

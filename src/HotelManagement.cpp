@@ -73,6 +73,14 @@ void HotelManagement::add_reservations(vector <Room*> rooms){
     }
 }
 
+vector<User*> HotelManagement::get_users(){
+    return users;
+}
+
+vector<Room*> HotelManagement::get_rooms(){
+    return rooms;
+}
+
 User* HotelManagement::get_user_by_id(int id){
     for (int i = 0; i < users.size(); i++){
         if (users[i]->get_id() == id)

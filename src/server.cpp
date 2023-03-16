@@ -151,6 +151,10 @@ int main(int argc, char const *argv[]) {
                     }
                     cout << "Sending response to client fd = " << i << ": " << response.dump() << endl;
 
+                    // update json files before sending response
+                    server_parser.rewrite_users_file(USERSINFO_FILE_NAME, hotel_managment.get_users());
+                    server_parser.rewrite_rooms_file(ROOMSINFO_FILE_NAME, hotel_managment.get_rooms());
+
                     send(i, response.dump().c_str(), response.dump().length(), 0);
                     memset(buffer, 0, MAX_BUFFER_SIZE);
                 }
